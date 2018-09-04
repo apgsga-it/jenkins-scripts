@@ -2,6 +2,7 @@ import hudson.*
 import hudson.model.*
 import jenkins.model.*
 import groovy.xml.*
+import groovy.json.*
 
 
 
@@ -24,6 +25,6 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
  
 }
 println moduleList
-def jsonOutput = new groovy.json.JsonBuilder(moduleList)
+def jsonOutput = new JsonBuilder(moduleList)
 println jsonOutput
 
