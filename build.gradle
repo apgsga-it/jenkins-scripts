@@ -4,7 +4,6 @@ apply plugin: 'eclipse'
 // In this section you declare where to find the dependencies of your project
 
 repositories {
-		mavenLocal()
 		maven { 
 		  credentials {
             	username "$repoUser"
@@ -12,14 +11,6 @@ repositories {
         	}
 			url "${mavenRepoBaseUrl}/repo" 
 		}
-}
-
-sourceSets {
-  main {
-    groovy {
-      srcDirs = ['src/main/jenkins/server', 'vars']
-    }
-  }
 }
 
 
