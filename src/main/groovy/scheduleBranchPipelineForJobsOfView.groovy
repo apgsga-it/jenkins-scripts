@@ -24,4 +24,11 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 println moduleList
 def jsonOutput = new JsonBuilder(["rootBranch":rootBranch, "targetBranch":targetBranch,modules:moduleList])
 println jsonOutput
-build job: 'createNewBranchForModulesPipeline', parameters: [string(name: 'parameter', value: jsonOutput)]
+def parameter = new StringParameterValue('parameter', jsonOutput);
+def paramsAction = new ParametersAction(parameter)
+def cause = new UpstreamCause(build)
+def causeAction = new CauseAction(cause)
+println "Scheduling Job "
+def job = hudson.model.Hudson.instance.getJob('createNewBranchForModulesPipeline')
+hudson.model.Hudson.instance.queue.schedule(job, 0, causeAction, paramsAction)
+
