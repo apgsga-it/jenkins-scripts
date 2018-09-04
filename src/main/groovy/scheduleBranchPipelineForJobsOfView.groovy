@@ -20,7 +20,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println "Modulename : "
 	// TODO (che, 4.9.2018) : could be more then one
 	def remoteName =  configXml.depthFirst().find{ node -> node.name() == 'remoteName'}
-	moduleList << [name:remoteName]
+	moduleList << [moduleName:remoteName]
 	println remoteName
  
 }
