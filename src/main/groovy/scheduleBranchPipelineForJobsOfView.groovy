@@ -16,7 +16,8 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println "Processing Job " + job.name 
 	def configXMLFile = job.getConfigFile().getFile().getAbsolutePath();
 	def configXml = new XmlSlurper().parse(configXMLFile)
-	println "Configuration : "
-	println XmlUtil.serialize(configXml).toString()
+	println "Modulename : "
+	def remoteName =  configXml.depthFirst().find{ node -> node.name() == 'remoteName'}
+	println remoteName
   
 }
