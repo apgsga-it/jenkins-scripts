@@ -25,6 +25,6 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
  
 }
 println moduleList
-def jsonOutput = new JsonBuilder(moduleList)
+def jsonOutput = new JsonBuilder([modules:moduleList])
 println jsonOutput
 
