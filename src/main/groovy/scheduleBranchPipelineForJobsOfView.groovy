@@ -13,7 +13,7 @@ def viewName = resolver.resolve("VIEWNAME")
 
 def patchView = Hudson.instance.getView(viewName)
 patchView.each { job ->
-	println "Processing Job " + job.fullName + " start"
+	println "Processing Job " + job.name 
 	def configXMLFile = job.getConfigFile().getFile().getAbsolutePath();
 	def configXml = new XmlSlurper().parse(configXMLFile)
 	println "Configuration : "
