@@ -24,4 +24,4 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 println moduleList
 def jsonOutput = new JsonBuilder(["rootBranch":rootBranch, "targetBranch":targetBranch,modules:moduleList])
 println jsonOutput
-
+build job: 'createNewBranchForModulesPipeline', parameters: [string(name: 'parameter', value: jsonOutput)]

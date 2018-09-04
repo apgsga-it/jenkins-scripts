@@ -10,4 +10,10 @@ properties([
 	])
 ])
 def request = new JsonSlurperClassic().parseText(params.PARAMETER)
-println request
+
+stage ("Cvs Branching Modules") {
+	
+	request.modules.each { module -> println module
+		
+	}
+}
