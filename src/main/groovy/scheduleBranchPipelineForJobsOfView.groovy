@@ -1,11 +1,10 @@
 import hudson.*
 import hudson.model.*
 import jenkins.model.*
-import groovy.json.JsonOutput
 import groovy.xml.*
 
 
-
+def builder = new groovy.json.JsonBuilder()
 
 def thr = Thread.currentThread()
 // get current build
@@ -24,5 +23,5 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println remoteName
  
 }
-def jsonParameter = JsonOutput.toJson(moduleList)
-println jsonParameter
+
+println moduleList
