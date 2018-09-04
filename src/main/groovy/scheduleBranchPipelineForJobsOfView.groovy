@@ -1,5 +1,6 @@
 import hudson.*
 import hudson.model.*
+import jenkins.model.*
 import groovy.xml.*
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
