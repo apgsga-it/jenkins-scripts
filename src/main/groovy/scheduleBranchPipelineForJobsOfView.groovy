@@ -24,7 +24,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 println moduleList
 def jsonOutput = new JsonBuilder(["rootBranch":rootBranch, "targetBranch":targetBranch,modules:moduleList])
 println jsonOutput
-def parameter = new StringParameterValue('parameter', jsonOutput);
+def parameter = new StringParameterValue('parameter', jsonOutput.toPrettyString());
 def paramsAction = new ParametersAction(parameter)
 def cause = new hudson.model.Cause.UpstreamCause(build)
 def causeAction = new hudson.model.CauseAction(cause)
