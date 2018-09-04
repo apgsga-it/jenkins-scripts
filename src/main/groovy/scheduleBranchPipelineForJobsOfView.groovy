@@ -10,7 +10,7 @@ def build = thr?.executable
 def resolver = build.buildVariableResolver
 def viewName = resolver.resolve("VIEWNAME")
 def rootBranch = resolver.resolve("ROOTBRANCH")
-def targetBranch = resolver.resolver("TARGETBRANCH")
+def targetBranch = resolver.resolve("TARGETBRANCH")
 def moduleList = []
 hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def configXMLFile = job.getConfigFile().getFile().getAbsolutePath();
