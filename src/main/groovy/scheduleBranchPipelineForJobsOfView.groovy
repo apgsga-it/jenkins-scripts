@@ -24,5 +24,5 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println remoteName
  
 }
-def jsonParameter = JsonOutput.toJson([modules:moduleList])
+def jsonParameter = JsonOutput.toJson(moduleList)
 println jsonParameter
