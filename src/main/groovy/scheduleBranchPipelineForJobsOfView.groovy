@@ -12,8 +12,7 @@ def build = thr?.executable
 def resolver = build.buildVariableResolver
 def viewName = resolver.resolve("VIEWNAME")
 
-def patchView = Hudson.instance.getView(viewName)
-patchView.each { job ->
+hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println "Processing Job " + job.name 
 	def configXMLFile = job.getConfigFile().getFile().getAbsolutePath();
 	def configXml = new XmlSlurper().parse(configXMLFile)
