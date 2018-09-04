@@ -1,4 +1,3 @@
-package 
 import groovy.json.JsonSlurper
 
 def targetSystemFile = new File("src/test/resources/json", "TargetSystemMappings.json")

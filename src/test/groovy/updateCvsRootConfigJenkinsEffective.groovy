@@ -1,4 +1,3 @@
-package 
 import groovy.xml.*
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource

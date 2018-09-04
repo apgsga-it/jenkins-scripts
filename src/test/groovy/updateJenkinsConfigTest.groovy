@@ -1,5 +1,4 @@
-package 
-import groovy.xml.*
+ import groovy.xml.*
 import javax.xml.transform.Result
 import javax.xml.transform.Source
 import javax.xml.transform.Transformer

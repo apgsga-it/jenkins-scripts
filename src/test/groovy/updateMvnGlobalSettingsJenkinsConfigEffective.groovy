@@ -1,5 +1,4 @@
-package 
-import groovy.xml.*
+ import groovy.xml.*
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 def boolean dry = true
