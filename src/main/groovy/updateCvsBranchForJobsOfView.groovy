@@ -17,11 +17,13 @@ def dry = resolver.resolve("DRY")
 hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def configXMLFile = job.getConfigFile().getFile().getAbsolutePath();
 	def configXml = new XmlSlurper().parse(configXMLFile)
+	println "**************Before Update: "
+	println XmlUtil.serialize(configXml).toString()
 	def branchName =  configXml.depthFirst().find{ node -> node.name() == 'locationName'}
 	branchName.replaceNode {
 		locationName(targetBranch)
 	}
-	println "After Update: "
+	println "++++++++++++++After Update: "
 	println XmlUtil.serialize(configXml).toString()
 	Source xmlInput=new StreamSource(new StringReader(XmlUtil.serialize(configXml)));
 	if (dry.equals('false')) {
