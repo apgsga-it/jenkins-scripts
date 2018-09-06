@@ -23,8 +23,8 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 		it.@class.toString().equals("hudson.scm.CvsRepositoryLocationBranchRepositoryLocation")
 	}
 	println location.toString()
-	location.replaceNode {
-		locationName("${targetBranch}")
+	location.replaceNode { node -> 
+		node.locationName("${targetBranch}")
 	}
 	println "++++++++++++++After Update: "
 	println XmlUtil.serialize(configXml).toString()
