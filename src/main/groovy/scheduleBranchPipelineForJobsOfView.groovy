@@ -11,6 +11,8 @@ def resolver = build.buildVariableResolver
 def viewName = resolver.resolve("VIEWNAME")
 def rootBranch = resolver.resolve("ROOTBRANCH")
 def targetBranch = resolver.resolve("TARGETBRANCH")
+def cvsRoot = resolver.resolve("CVSROOT")
+
 
 def moduleList = []
 hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
@@ -23,7 +25,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 
 }
 println moduleList
-def jsonOutput = new JsonBuilder(["rootBranch":rootBranch, "targetBranch":targetBranch,modules:moduleList])
+def jsonOutput = new JsonBuilder(["rootBranch":rootBranch, "targetBranch":targetBranch ,"cvsRoot":cvsRoot,modules:moduleList])
 println jsonOutput
 def parameter = new StringParameterValue('PARAMETER', jsonOutput.toPrettyString());
 def paramsAction = new ParametersAction(parameter)
