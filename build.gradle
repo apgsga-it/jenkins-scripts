@@ -4,6 +4,9 @@ apply plugin: 'eclipse'
 // In this section you declare where to find the dependencies of your project
 
 repositories {
+		maven {
+			url 'http://repo.spring.io/plugins-release'
+		}
 		maven { 
 		  credentials {
             	username "$repoUser"
@@ -11,11 +14,12 @@ repositories {
         	}
 			url "${mavenRepoBaseUrl}/repo" 
 		}
+
 }
 
 
 dependencies {
-   	compile group: 'org.codehaus.groovy' , name: 'groovy-all', version: '2.4.9'
-
+	compile group: 'org.jenkins-ci.main', name: 'jenkins-core', version: '2.85'
+	compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 }
 
