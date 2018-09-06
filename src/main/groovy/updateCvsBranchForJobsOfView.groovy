@@ -24,7 +24,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println "After Update: "
 	println XmlUtil.serialize(configXml).toString()
 	Source xmlInput=new StreamSource(new StringReader(XmlUtil.serialize(configXml)));
-	if (dry.equals('false') {
+	if (dry.equals('false')) {
 		job.updateByXml(xmlInput)
 	}
 
