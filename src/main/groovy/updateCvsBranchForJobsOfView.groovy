@@ -1,5 +1,7 @@
 import hudson.*
 import hudson.model.*
+import javax.xml.transform.Source
+import javax.xml.transform.stream.StreamSource
 import jenkins.model.*
 import groovy.xml.*
 import groovy.json.*
@@ -10,18 +12,23 @@ def build = thr?.executable
 def resolver = build.buildVariableResolver
 def viewName = resolver.resolve("VIEWNAME")
 def targetBranch = resolver.resolve("TARGETBRANCH")
-
-
+def dry = resolver.resolve("DRY")
 
 hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def configXMLFile = job.getConfigFile().getFile().getAbsolutePath();
 	def configXml = new XmlSlurper().parse(configXMLFile)
-	println XmlUtil.serialize(configXml).toString()
-	println " "
-	// TODO (che, 4.9.2018) : could be more then one
 	def branchName =  configXml.depthFirst().find{ node -> node.name() == 'locationName'}
-	println branchName
+	branchName.replaceNode {
+		locationName(targetBranch)
+	}
+	println "After Update: "
+	println XmlUtil.serialize(configXml).toString()
+	Source xmlInput=new StreamSource(new StringReader(XmlUtil.serialize(configXml)));
+	if ((dry.equals('false')) {
+		job.updateByXml(xmlInput)
+	}
 
 }
+
 
 
