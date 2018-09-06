@@ -22,9 +22,9 @@ stage ("Cvs Branching Modules") {
 def branchModule(module,rootBranch,targetBranch) {
 	return {
 		node {
-			def cvsCmd = "cvs -d /var/local/cvs/root rtag -b -r ${rootBranch} ${targetBranch}"
 			sh "#!/bin/bash \n" + 
-			"${cvsCmd}"
+			"export CVSROOT=/var/local/cvs/root\n"
+			"cvs rtag -b -r ${rootBranch} ${targetBranch}"
 		}
 	}
 }
