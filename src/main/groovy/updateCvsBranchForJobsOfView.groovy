@@ -22,7 +22,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def localationNode =  configXml.depthFirst().find{ node -> node.name() == 'location'}
 	println localationNode
 	if (localationNode != null) {
-	  localationNode.replaceNode {
+	  localationNode.locationName.replaceNode {
 		  locationName("${targetBranch}")
 	  }
   	}
