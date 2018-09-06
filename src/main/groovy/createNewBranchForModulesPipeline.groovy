@@ -25,7 +25,7 @@ def branchModule(module,rootBranch,targetBranch) {
 			sh "#!/bin/bash \n" + 
 			"set -x\n" +
 			"export CVSROOT=/var/local/cvs/root\n" +
-			"cvs rtag -b -r ${rootBranch} ${targetBranch}"
+			"cvs rtag -b -r ${rootBranch} ${targetBranch} + ${module}"
 		}
 	}
 }
