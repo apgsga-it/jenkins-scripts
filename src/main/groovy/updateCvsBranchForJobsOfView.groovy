@@ -19,13 +19,12 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def configXml = new XmlSlurper().parse(configXMLFile)
 	println "**************Before Update: "
 	println XmlUtil.serialize(configXml).toString()
-	def location  = configXml.depthFirst().find {
-		it.@class.toString().equals("hudson.scm.CvsRepositoryLocationBranchRepositoryLocation")
-	}
-	println location
-	location.replaceNode { node -> 
-		node.locationName("${targetBranch}")
-	}
+	def localationNode =  configXml.depthFirst().find{ node -> node.name() == 'location '}
+	if (localationNode != null) {
+	  localationNode.replaceNode {
+		  location.locationName("${targetBranch}")
+	  }
+  	}
 	println "++++++++++++++After Update: "
 	println XmlUtil.serialize(configXml).toString()
 	Source xmlInput=new StreamSource(new StringReader(XmlUtil.serialize(configXml)));
