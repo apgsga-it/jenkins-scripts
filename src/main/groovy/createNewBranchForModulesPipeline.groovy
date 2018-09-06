@@ -13,7 +13,7 @@ def request = new JsonSlurperClassic().parseText(params.PARAMETER)
 
 stage ("Cvs Branching Modules") {
 	def parallelBranching = request.modules.collectEntries {
-		[ "Branching Module ${it}" : branchModule(it, request.rootBranch, request.targetBranch)]
+		[ "Module ${it}" : branchModule(it, request.rootBranch, request.targetBranch)]
 	}
 	parallel parallelBranching
 }
