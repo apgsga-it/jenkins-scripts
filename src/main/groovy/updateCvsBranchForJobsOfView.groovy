@@ -23,7 +23,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println localationNode
 	if (localationNode != null) {
 	  localationNode.replaceNode {
-		  localationNode.locationName("${targetBranch}")
+		  locationName("${targetBranch}")
 	  }
   	}
 	println "++++++++++++++After Update: "
