@@ -24,7 +24,7 @@ def branchModule(module,rootBranch,targetBranch) {
 		node {
 			def cvsCmd = "cvs rtag -b -r ${rootBranch} ${targetBranch}"
 			sh "#!/bin/bash \n" + 
-			"echo ${cvsCmd}"
+			"${cvsCmd}"
 		}
 	}
 }
