@@ -19,7 +19,8 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def configXml = new XmlSlurper().parse(configXMLFile)
 	println "**************Before Update: "
 	println XmlUtil.serialize(configXml).toString()
-	def localationNode =  configXml.depthFirst().find{ node -> node.name() == 'location '}
+	def localationNode =  configXml.depthFirst().find{ node -> node.name() == 'location  '}
+	println localationNode
 	if (localationNode != null) {
 	  localationNode.replaceNode {
 		  location.locationName("${targetBranch}")
