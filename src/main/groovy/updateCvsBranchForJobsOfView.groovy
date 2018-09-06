@@ -20,6 +20,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	println "**************Before Update: "
 	println XmlUtil.serialize(configXml).toString()
 	def branchName =  configXml.depthFirst().find{ node -> node.name() == 'locationName'}
+	println branchName
 	branchName.replaceNode {
 		locationName("${targetBranch}")
 	}
