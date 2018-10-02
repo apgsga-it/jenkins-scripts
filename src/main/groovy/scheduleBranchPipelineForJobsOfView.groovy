@@ -20,10 +20,11 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def configXml = new XmlSlurper().parse(configXMLFile)
 	// TODO (che, 4.9.2018) : could be more then one
 	def remoteName =  configXml.depthFirst().find{ node -> node.name() == 'remoteName'}
-	if (remoteName.endsWith("dao") | remoteName.endsWith("ui") | remoteName.endsWith("impl") 
-		| remoteName.endsWith("proc") 
-		| remoteName.endsWith("domainwerte") | remoteName.endsWith("runtime") | remoteName.endsWith("rep") | remoteName.endsWith("utils"))
-		moduleList << [moduleName:"${remoteName.toString()}"]
+	def moduleName = remoteName.toString()
+	if (moduleName.endsWith("dao") | moduleName.endsWith("ui") | moduleName.endsWith("impl") 
+		| moduleName.endsWith("proc") 
+		| moduleName.endsWith("domainwerte") | moduleName.endsWith("runtime") | moduleName.endsWith("rep") | moduleName.endsWith("utils"))
+		moduleList << [moduleName:"${moduleName}"]
 	println remoteName
 
 }
