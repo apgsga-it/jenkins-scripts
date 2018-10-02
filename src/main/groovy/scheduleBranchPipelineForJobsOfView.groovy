@@ -21,7 +21,7 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	// TODO (che, 4.9.2018) : could be more then one
 	def remoteName =  configXml.depthFirst().find{ node -> node.name() == 'remoteName'}
 	def moduleName = remoteName.toString()
-	if (moduleName.endsWith("dao") | moduleName.endsWith("ui") | moduleName.endsWith("impl") 
+	if (moduleName.endsWith("dao") | moduleName.endsWith(".ui") | moduleName.endsWith("impl") 
 		| moduleName.endsWith("proc") 
 		| moduleName.endsWith("domainwerte") | moduleName.endsWith("runtime") | moduleName.endsWith("rep") | moduleName.endsWith("utils"))
 		moduleList << [moduleName:"${moduleName}"]
