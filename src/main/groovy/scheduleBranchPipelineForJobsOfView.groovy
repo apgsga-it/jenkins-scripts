@@ -1,8 +1,8 @@
+import groovy.json.*
+import groovy.xml.*
 import hudson.*
 import hudson.model.*
 import jenkins.model.*
-import groovy.xml.*
-import groovy.json.*
 
 def thr = Thread.currentThread()
 // get current build
@@ -20,7 +20,10 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def configXml = new XmlSlurper().parse(configXMLFile)
 	// TODO (che, 4.9.2018) : could be more then one
 	def remoteName =  configXml.depthFirst().find{ node -> node.name() == 'remoteName'}
-	moduleList << [moduleName:"${remoteName.toString()}"]
+	if (remoteName.endsWith("dao") | remoteName.endsWith("ui") | remoteName.endsWith("impl") 
+		| remoteName.endsWith("proc") 
+		| remoteName.endsWith("domainwerte") | remoteName.endsWith("runtime") | remoteName.endsWith("rep") | remoteName.endsWith("utils"))
+		moduleList << [moduleName:"${remoteName.toString()}"]
 	println remoteName
 
 }
@@ -31,6 +34,6 @@ def parameter = new StringParameterValue('PARAMETER', jsonOutput.toPrettyString(
 def paramsAction = new ParametersAction(parameter)
 def cause = new hudson.model.Cause.UpstreamCause(build)
 def causeAction = new hudson.model.CauseAction(cause)
-def job = hudson.model.Hudson.instance.getJob('createNewBranchForModulesPipeline')
+//def job = hudson.model.Hudson.instance.getJob('createNewBranchForModulesPipeline')
 hudson.model.Hudson.instance.queue.schedule(job, 0, causeAction, paramsAction)
 
