@@ -23,9 +23,10 @@ hudson.model.Hudson.instance.getView(viewName).items.each()  { job ->
 	def moduleName = remoteName.toString()
 	if (moduleName.endsWith("dao") | moduleName.endsWith(".ui") | moduleName.endsWith("impl") 
 		| moduleName.endsWith("proc") 
-		| moduleName.endsWith("domainwerte") | moduleName.endsWith("runtime") | moduleName.endsWith("rep") | moduleName.endsWith("utils"))
+		| moduleName.endsWith("domainwerte") | moduleName.endsWith("runtime") | moduleName.endsWith("rep") | moduleName.endsWith("utils")) {
 		moduleList << [moduleName:"${moduleName}"]
-	println remoteName
+		println moduleName
+	}
 
 }
 println moduleList
@@ -36,5 +37,5 @@ def paramsAction = new ParametersAction(parameter)
 def cause = new hudson.model.Cause.UpstreamCause(build)
 def causeAction = new hudson.model.CauseAction(cause)
 //def job = hudson.model.Hudson.instance.getJob('createNewBranchForModulesPipeline')
-hudson.model.Hudson.instance.queue.schedule(job, 0, causeAction, paramsAction)
+//hudson.model.Hudson.instance.queue.schedule(job, 0, causeAction, paramsAction)
 
