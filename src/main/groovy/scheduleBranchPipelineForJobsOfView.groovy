@@ -36,6 +36,6 @@ def parameter = new StringParameterValue('PARAMETER', jsonOutput.toPrettyString(
 def paramsAction = new ParametersAction(parameter)
 def cause = new hudson.model.Cause.UpstreamCause(build)
 def causeAction = new hudson.model.CauseAction(cause)
-//def job = hudson.model.Hudson.instance.getJob('createNewBranchForModulesPipeline')
-//hudson.model.Hudson.instance.queue.schedule(job, 0, causeAction, paramsAction)
+def job = hudson.model.Hudson.instance.getJob('createNewBranchForModulesPipeline')
+hudson.model.Hudson.instance.queue.schedule(job, 0, causeAction, paramsAction)
 
