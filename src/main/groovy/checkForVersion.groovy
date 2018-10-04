@@ -13,7 +13,7 @@ jobs = Jenkins.instance.getAllItems(hudson.maven.MavenModuleSet.class).each {  j
 		def pomFile = new File(wrks,'pom.xml')
 		if (pomFile.exists()) {
 			def pomXml = new XmlSlurper().parse(pomFile)
-			if (!pomXml.version.equals('9.0.6.ADMIN-UIMIG-${revision}')) {
+			if (!pomXml.version.equals('9.1.0.ADMIN-UIMIG-${revision}')) {
 				println "${job.name} nok: ${pomXml.version}"
 			}
 		} else {
