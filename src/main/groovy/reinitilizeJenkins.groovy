@@ -13,7 +13,7 @@
 properties([
 	parameters([
 		booleanParam(
-			defaultValue: "",
+			defaultValue: true,
 			description: 'Parameter',
 			name: 'dryRun'
 			),
