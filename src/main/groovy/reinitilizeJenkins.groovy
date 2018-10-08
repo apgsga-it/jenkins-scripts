@@ -31,7 +31,7 @@ stage("Delete all Patch Job") {
 				println "Deleted ${item.name}"
 				if (!jobName.contains("Download")) {
 					def patchNumber = jobName.substring(5,jobName.length())
-					def cmd = "apscli.sh -r ${patchNumber}"
+					def cmd = "/opt/apg-patch-cli/bin/apscli.sh -r ${patchNumber}"
 					println "Following ccommand will be executed: ${cmd}"
 					sh(cmd)
 				}
