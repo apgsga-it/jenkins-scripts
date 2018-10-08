@@ -56,3 +56,20 @@ stage("Delete Revisions.json and patchToBeReinstalled.json files") {
 		}
 	}
 }
+
+stage("Cleaning up Jenkins Maven Local Repository") {
+	node {
+		if(!dry) {
+			def affichageFolder = "/var/jenkins/maven/repository/com/affichage"
+			def apgsgaFolder = "/var/jenkins/maven/repository/com/apgsga"
+			
+			sh("rm -rf ${affichageFolder}")
+			sh("rm -rf ${apgsgaFolder}")
+			
+			peinrln "${affichageFolder} and ${apgsgaFolder} have been deleted!"
+		}
+		else {
+			println "Jenkins Maven Local Repository has not been cleaned up, running dry ..."
+		}
+	}
+}
