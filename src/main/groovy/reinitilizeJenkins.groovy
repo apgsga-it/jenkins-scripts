@@ -24,23 +24,26 @@ properties([
 
 def dry = params.dryRun
 
-stage("Delete all Patch Job") {
+stage("Delete all Patch Job with corresponding Json file") {
 	node {
-		Jenkins.instance.getView("Patches").items.each { item ->
-			if (!dry) {
-				def jobName = item.name
-				item.delete()
-				println "Deleted ${item.name}"
-				if (!jobName.contains("Download")) {
-					def patchNumber = jobName.substring(5,jobName.length())
-					def cmd = "/opt/apg-patch-cli/bin/apscli.sh -r ${patchNumber}"
-					if(new File("/var/opt/apg-patch-service-server/db/Patch${patchNumber}.json").exists()) {
-						println "Following ccommand will be executed: ${cmd}"
-						sh(cmd)
+		["ProductivePatches", "Patches"].each { viewName ->
+		
+			Jenkins.instance.getView(viewName).items.each { item ->
+				if (!dry) {
+					def jobName = item.name
+					item.delete()
+					println "Deleted ${item.name}"
+					if (!jobName.contains("Download")) {
+						def patchNumber = jobName.substring(5,jobName.length())
+						def cmd = "/opt/apg-patch-cli/bin/apscli.sh -r ${patchNumber}"
+						if(new File("/var/opt/apg-patch-service-server/db/Patch${patchNumber}.json").exists()) {
+							println "Following ccommand will be executed: ${cmd}"
+							sh(cmd)
+						}
 					}
+				} else {
+					println "Didn't do anything for ${item.name}, running dry ..."
 				}
-			} else {
-				println "Didn't do anything for ${item.name}, running dry ..."
 			}
 		}
 	}
