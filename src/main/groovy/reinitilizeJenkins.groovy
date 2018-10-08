@@ -104,7 +104,13 @@ stage("Cleaning up Artifactory releases") {
 			def artifacts = slurper.parse(f)
 			
 			artifacts.results.each{
-				sh("curl -udev:dev1234 -XDELETE ${it.uri}")
+				//sh("curl -udev:dev1234 -XDELETE ${it.uri}")
+				
+				def urlforDelete = "https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/releases/"
+				def firstIndex = "https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/storage/releases/"
+				def lastPartUrl = it.uri.substring(firstIndex.length(), it.uri.length())
+				
+				println "Would be deleted: ${urlforDelete}/${lastPartUrl}" 
 			}
 		}
 		else {
