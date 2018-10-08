@@ -7,10 +7,17 @@ properties([
 			description: 'Parameter',
 			name: 'dryRun'
 			),
+		stringParameter(
+			defaultValue: "9.1.0.ADMIN-UIMIG-",
+			description: 'Parameter',
+			name: 'releaseArtifactToDelete'
+			
+			)
 	])
 ])
 
 def dry = params.dryRun
+def releaseArtifactToDelete = params.releaseArtifactToDelete
 
 stage("Delete all Patch Job with corresponding Json file") {
 	node {
@@ -74,6 +81,26 @@ stage("Cleaning up Jenkins Maven Local Repository") {
 		}
 		else {
 			println "Jenkins Maven Local Repository has not been cleaned up, running dry ..."
+		}
+	}
+}
+
+stage("Cleaning up Artifactory releases") {
+	node {
+		if(!dry) {
+			println "All Artifacty for ${releaseArtifactToDelete} Release will be deleted..."
+						
+		}
+		else {
+			println "No Release have been deleted from Artifactory, running dry ..."
+			
+			def fileName = "artifactsToDelete.json"
+			def f = new File(fileName)
+			if(f.exists()) {
+				f.delete()
+			}
+			def cmd = "curl -o ${fileName} -udev:dev1234 \"https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/artifact?name=9.1.0.ADMIN-UIMIG*&repos=releases\""
+			sh(cmd)
 		}
 	}
 }
