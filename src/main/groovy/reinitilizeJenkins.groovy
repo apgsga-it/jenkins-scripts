@@ -29,7 +29,7 @@ stage("Delete all Patch Job") {
 		Jenkins.instance.getView("Patches").items.each { item ->
 			if (!dry) {
 				def jobName = item.name
-				//item.delete()
+				item.delete()
 				println "Deleted ${item.name}"
 				if (!jobName.contains("Download")) {
 					def patchNumber = jobName.substring(5,jobName.length())
