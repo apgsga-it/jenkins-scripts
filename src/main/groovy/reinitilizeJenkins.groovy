@@ -7,7 +7,7 @@ properties([
 			description: 'Parameter',
 			name: 'dryRun'
 			),
-		stringParameter(
+		stringParam(
 			defaultValue: "9.1.0.ADMIN-UIMIG-",
 			description: 'Parameter',
 			name: 'releaseArtifactToDelete'
