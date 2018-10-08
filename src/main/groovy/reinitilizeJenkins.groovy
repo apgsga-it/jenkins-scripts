@@ -103,7 +103,7 @@ stage("Cleaning up Artifactory releases") {
 			}
 			def cmd = "curl -o ${fileName} -udev:dev1234 \"https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/artifact?name=${releaseArtifactToDelete}*&repos=releases\""
 			sh(cmd)
-			f = new File(fileName)
+			f = new File("/var/jenkins/workspace/Reinitialize Jenkins/artifactsToDelete.json")
 			JsonSlurper slurper = new JsonSlurper()
 			def artifacts = slurper.parse(f)
 			
