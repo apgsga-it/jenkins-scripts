@@ -34,7 +34,7 @@ stage("Delete all Patch Job") {
 				if (!jobName.contains("Download")) {
 					def patchNumber = jobName.substring(5,jobName.length())
 					def cmd = "/opt/apg-patch-cli/bin/apscli.sh -r ${patchNumber}"
-					if(Files.exists("/var/opt/apg-patch-service-server/db/Patch${patchNumber}.json")) {
+					if(new File("/var/opt/apg-patch-service-server/db/Patch${patchNumber}.json").exists()) {
 						println "Following ccommand will be executed: ${cmd}"
 						sh(cmd)
 					}
