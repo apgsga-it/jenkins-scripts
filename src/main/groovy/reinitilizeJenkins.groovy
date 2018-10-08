@@ -32,7 +32,8 @@ stage("Delete all Patch Job") {
 			if (!jobName.contains("Download")) {
 				def patchNumber = jobName.substring(5,jobName.length())
 				def cmd = "apscli.sh -r ${patchNumber}"
-				println "cmd = ${cmd}"
+				println "Following ccommand will be executed = ${cmd}"
+				sh(cmd)
 			}
 		} else {
 			println "Didn't do anything for ${item.name}, running dry ..."
