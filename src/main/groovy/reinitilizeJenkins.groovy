@@ -1,17 +1,5 @@
 import java.nio.file.Files
 
-/*
-*
-* This pipeline will:
-* 
-* 	- Delete all jobs from the "Patches" view
-* 	- Archive all jobs from the "ProductivePatches" view
-*   - Delete all /var/opt/apg-patch-service-server/db/PatchXXXX.json file by calling apscli.sh
-*   - Delete /var/jenkins/maven/repository/com/affichage and /var/jenkins/maven/repository/com/apgsga folders
-*   - Delete all "9.1.0.ADMIN-UIMIG-X" releases on Artifactory
-*
-*/
-
 properties([
 	parameters([
 		booleanParam(
@@ -49,3 +37,22 @@ stage("Delete all Patch Job with corresponding Json file") {
 	}
 }
 	
+stage("Delete Revisions.json and patchToBeReinstalled.json files") {
+	node {
+		if(!dry) {
+			def msg
+			def revisionFileName = "/var/opt/apg-patch-cli/Revisions.json"
+			def revisionFile = new File(revisionFileName)
+			def patchToBeInstalledFileName = "/var/opt/apg-patch-cli/patchToBeReinstalled.json"
+			def patchToBeInstalledFile = new File(patchToBeInstalledFileName)
+			
+			msg = (revisionFile.delete() ? "${revisionFileName} has been deleted!" : "Error while deleting ${revisionFileName}")
+			println msg
+			
+			msg = (patchToBeInstalledFile.delete() ? "${patchToBeInstalledFileName} has been deleted!" : "Error while deleting ${patchToBeInstalledFileName}")
+			println msg
+		} else {
+			println "Revisions.json and patchToBeReinstalled.json files haven't been deleted, running dry ..."
+		}
+	}
+}
