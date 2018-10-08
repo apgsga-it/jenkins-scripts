@@ -46,11 +46,15 @@ stage("Delete Revisions.json and patchToBeReinstalled.json files") {
 			def patchToBeInstalledFileName = "/var/opt/apg-patch-cli/patchToBeReinstalled.json"
 			def patchToBeInstalledFile = new File(patchToBeInstalledFileName)
 			
-			msg = (revisionFile.delete() ? "${revisionFileName} has been deleted!" : "Error while deleting ${revisionFileName}")
-			println msg
+			if(revisionFile.exists()) {
+				msg = (revisionFile.delete() ? "${revisionFileName} has been deleted!" : "Error while deleting ${revisionFileName}")
+				println msg
+			}
 			
-			msg = (patchToBeInstalledFile.delete() ? "${patchToBeInstalledFileName} has been deleted!" : "Error while deleting ${patchToBeInstalledFileName}")
-			println msg
+			if(patchToBeInstalledFile.exists()) {
+				msg = (patchToBeInstalledFile.delete() ? "${patchToBeInstalledFileName} has been deleted!" : "Error while deleting ${patchToBeInstalledFileName}")
+				println msg
+			}
 		} else {
 			println "Revisions.json and patchToBeReinstalled.json files haven't been deleted, running dry ..."
 		}
@@ -66,7 +70,7 @@ stage("Cleaning up Jenkins Maven Local Repository") {
 			sh("rm -rf ${affichageFolder}")
 			sh("rm -rf ${apgsgaFolder}")
 			
-			peinrln "${affichageFolder} and ${apgsgaFolder} have been deleted!"
+			println "${affichageFolder} and ${apgsgaFolder} have been deleted!"
 		}
 		else {
 			println "Jenkins Maven Local Repository has not been cleaned up, running dry ..."
