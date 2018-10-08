@@ -91,10 +91,6 @@ stage("Cleaning up Artifactory releases") {
 	node {
 		if(!dry) {
 			println "All Artifacty for ${releaseArtifactToDelete} Release will be deleted..."
-						
-		}
-		else {
-			println "No Release have been deleted from Artifactory, running dry ..."
 			
 			def fileName = "artifactsToDelete.json"
 			def f = new File(fileName)
@@ -108,8 +104,11 @@ stage("Cleaning up Artifactory releases") {
 			def artifacts = slurper.parse(f)
 			
 			artifacts.results.each{
-				println it."uri"
-			}			
+				sh("curl -udev:dev1234 -XDELETE ${it.uri}")
+			}
+		}
+		else {
+			println "No Release have been deleted from Artifactory, running dry ..."
 		}
 	}
 }
