@@ -1,5 +1,7 @@
 import java.nio.file.Files
 
+import groovy.json.JsonSlurper
+
 properties([
 	parameters([
 		booleanParam(
@@ -101,6 +103,13 @@ stage("Cleaning up Artifactory releases") {
 			}
 			def cmd = "curl -o ${fileName} -udev:dev1234 \"https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/artifact?name=9.1.0.ADMIN-UIMIG*&repos=releases\""
 			sh(cmd)
+			f = new File(fileName)
+			JsonSlurper slurper = new JsonSlurper()
+			def artifacts = slurper.parse(f)
+			
+			artifacts.results.each{
+				println it."uri"
+			}			
 		}
 	}
 }
