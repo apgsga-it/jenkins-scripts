@@ -1,3 +1,5 @@
+import java.nio.file.Files
+
 /*
 *
 * This pipeline will:
@@ -32,8 +34,10 @@ stage("Delete all Patch Job") {
 				if (!jobName.contains("Download")) {
 					def patchNumber = jobName.substring(5,jobName.length())
 					def cmd = "/opt/apg-patch-cli/bin/apscli.sh -r ${patchNumber}"
-					println "Following ccommand will be executed: ${cmd}"
-					sh(cmd)
+					if(Files.exists("/var/opt/apg-patch-service-server/db/Patch${patchNumber}.json")) {
+						println "Following ccommand will be executed: ${cmd}"
+						sh(cmd)
+					}
 				}
 			} else {
 				println "Didn't do anything for ${item.name}, running dry ..."
