@@ -22,14 +22,20 @@ properties([
 
 def dry = params.dryRun
 
-stage("delete all Jobs from Patches View") {
+stage("Delete all Patch Job") {
 	
 	Jenkins.instance.getView("Patches").items.each { item ->
 		if (!dry) {
+			def jobName = item.name
 			//item.delete()
 			println "Deleted ${item.name}"
+			if (!jobName.contains("Download")) {
+				def patchNumber = jobName.substring(5,jobName.length())
+				def cmd = "apscli.sh -r ${patchNumber}"
+				println "cmd = ${cmd}"
+			}
 		} else {
-			println "Didn't delete ${item.name}, running dry"
+			println "Didn't do anything for ${item.name}, running dry ..."
 		}
 	}
 }
