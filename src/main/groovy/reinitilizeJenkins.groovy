@@ -21,6 +21,8 @@ properties([
 def dry = params.dryRun
 def releaseArtifactToDelete = params.releaseArtifactToDelete
 
+println "Running with following parameter: dry=${dry} , releaseArtifactToDelete=${releaseArtifactToDelete}"
+
 stage("Delete all Patch Job with corresponding Json file") {
 	node {
 		["ProductivePatches", "Patches"].each { viewName ->
