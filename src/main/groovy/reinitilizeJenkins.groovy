@@ -29,7 +29,7 @@ stage("Delete all Patch Job with corresponding Json file") {
 		
 			Jenkins.instance.getView(viewName).items.each { item ->
 				def jobName = item.name
-				if(!dryRun) {
+				if(!dry) {
 					item.delete()
 					println "Deleted ${item.name}"
 				}
@@ -64,7 +64,7 @@ stage("Delete Revisions.json and patchToBeReinstalled.json files") {
 		def patchToBeInstalledFile = new File(patchToBeInstalledFileName)
 		
 		if(revisionFile.exists()) {
-			if(!dryRun) {
+			if(!dry) {
 				msg = (revisionFile.delete() ? "${revisionFileName} has been deleted!" : "Error while deleting ${revisionFileName}")
 				println msg
 			}
@@ -74,7 +74,7 @@ stage("Delete Revisions.json and patchToBeReinstalled.json files") {
 		}
 		
 		if(patchToBeInstalledFile.exists()) {
-			if(!dryRun) {
+			if(!dry) {
 				msg = (patchToBeInstalledFile.delete() ? "${patchToBeInstalledFileName} has been deleted!" : "Error while deleting ${patchToBeInstalledFileName}")
 				println msg
 			}
@@ -90,7 +90,7 @@ stage("Cleaning up Jenkins Maven Local Repository") {
 		def affichageFolder = "/var/jenkins/maven/repository/com/affichage"
 		def apgsgaFolder = "/var/jenkins/maven/repository/com/apgsga"
 
-		if(!dryRun) {
+		if(!dry) {
 			sh("rm -rf ${affichageFolder}")
 			sh("rm -rf ${apgsgaFolder}")
 			println "${affichageFolder} and ${apgsgaFolder} have been deleted!"
@@ -108,7 +108,7 @@ stage("Cleaning up Artifactory releases") {
 		def fileName = "artifactsToDelete.json"
 		def f = new File(fileName)
 		if(f.exists()) {
-			if(!dryRun) {
+			if(!dry) {
 				f.delete()
 			}
 			else{
@@ -127,7 +127,7 @@ stage("Cleaning up Artifactory releases") {
 			def firstIndex = "https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/storage/releases/"
 			def lastPartUrl = it.uri.substring(firstIndex.length(), it.uri.length())
 			
-			if(!dryRun) {
+			if(!dry) {
 				println "Will be deleted: ${urlforDelete}${lastPartUrl}" 
 				sh("curl -udev:dev1234 -XDELETE ${urlforDelete}${lastPartUrl}")
 			}
