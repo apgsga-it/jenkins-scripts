@@ -18,7 +18,7 @@ properties([
 	])
 ])
 
-def dry = params.dryRun
+def boolean dry = params.dryRun
 def releaseArtifactToDelete = params.releaseArtifactToDelete
 
 println "Running with following parameter: dry=${dry} , releaseArtifactToDelete=${releaseArtifactToDelete}"
