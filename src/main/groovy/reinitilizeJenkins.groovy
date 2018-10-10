@@ -101,6 +101,17 @@ stage("Cleaning up Jenkins Maven Local Repository") {
 	}
 }
 
+stage("Cleaning up PatchService local Maven Repo") {
+	node {
+		if(!dry) {
+			sh("/opt/apg-patch-cli/bin/apscli.sh -cm")
+		}
+		else {
+			println "dryRun only .... 'apscli.sh -cm' would have been called."
+		}
+	}
+}
+
 stage("Cleaning up Artifactory releases") {
 	node {
 		println "All Artifacty for ${releaseArtifactToDelete} Release will be deleted..."
