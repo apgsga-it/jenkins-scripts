@@ -85,18 +85,21 @@ stage("Delete Revisions.json and patchToBeReinstalled.json files") {
 	}
 }
 
-stage("Cleaning up Jenkins Maven Local Repository") {
+stage("Cleaning up Jenkins Maven Local Repository and Gradle Cache folder") {
 	node {
 		def affichageFolder = "/var/jenkins/maven/repository/com/affichage"
 		def apgsgaFolder = "/var/jenkins/maven/repository/com/apgsga"
+		def jenkinsGradleCacheFolder = "/var/jenkins/gradle/home/caches"
 
 		if(!dry) {
 			sh("rm -rf ${affichageFolder}")
 			sh("rm -rf ${apgsgaFolder}")
 			println "${affichageFolder} and ${apgsgaFolder} have been deleted!"
+			sh("rm -rf ${jenkinsGradleCacheFolder}")
+			println "${jenkinsGradleCacheFolder} has been deleted!"
 		}
 		else {
-			println "dryRun only ... ${affichageFolder} and ${apgsgaFolder} would have been deleted."
+			println "dryRun only ... ${jenkinsGradleCacheFolder}, ${affichageFolder} and ${apgsgaFolder} would have been deleted."
 		}
 	}
 }
