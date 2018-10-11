@@ -85,7 +85,7 @@ stage("Delete Revisions.json and patchToBeReinstalled.json files") {
 	}
 }
 
-stage("Cleaning up Jenkins Maven Local Repository and Gradle Cache folder") {
+stage("Cleaning up Jenkins Maven Local Repository and Gradle Cache folder ") {
 	node {
 		def affichageFolder = "/var/jenkins/maven/repository/com/affichage"
 		def apgsgaFolder = "/var/jenkins/maven/repository/com/apgsga"
