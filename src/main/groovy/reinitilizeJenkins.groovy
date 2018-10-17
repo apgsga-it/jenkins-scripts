@@ -37,7 +37,7 @@ stage("Delete all Patch Job with corresponding Json file") {
 					println "dryRun only ... ${item.name} would have been deleted."
 				}
 				
-				if (!jobName.contains("Download")) {
+				if (!jobName.contains("OnDemand")) {
 					def patchNumber = jobName.substring(5,jobName.length())
 					def cmd = "/opt/apg-patch-cli/bin/apscli.sh -r ${patchNumber}"
 					if(new File("/var/opt/apg-patch-service-server/db/Patch${patchNumber}.json").exists()) {
