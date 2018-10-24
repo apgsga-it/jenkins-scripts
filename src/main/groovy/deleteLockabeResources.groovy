@@ -19,7 +19,7 @@ stage("Delete Lockable Resources") {
 		  !it.locked
 		}
 		resources.each{
-			if(!dryRun) {
+			if(!dry) {
 				manager.getResources().remove(it)
 				println "${it} has been removed."
 			}
@@ -27,7 +27,7 @@ stage("Delete Lockable Resources") {
 				println "Running dry, otherwise ${it} would have been removed."
 			}
 		}
-		if(!dryRun) {
+		if(!dry) {
 			manager.save()
 			println "Save done."
 		}
