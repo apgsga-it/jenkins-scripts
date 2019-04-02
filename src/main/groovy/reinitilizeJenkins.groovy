@@ -13,7 +13,6 @@ properties([
 			defaultValue: "9.1.0.ADMIN-UIMIG-",
 			description: 'Parameter',
 			name: 'releaseArtifactToDelete'
-			
 			)
 	])
 ])
@@ -129,7 +128,7 @@ stage("Cleaning up Artifactory releases") {
 				println "dryRun only ... ${fileName} would have been deleted."
 			}
 		}
-		def cmd = "curl -o ${fileName} -udev:dev1234 \"https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/artifact?name=${releaseArtifactToDelete}*&repos=releases\""
+		def cmd = "curl -o ${fileName} -u${mavenRepoUser}:${mavenRepoPwd} \"https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/artifact?name=${releaseArtifactToDelete}*&repos=${mavenReleasesRepoName}\""
 		sh(cmd)
 		f = new File("/var/jenkins/workspace/Reinitialize Jenkins/artifactsToDelete.json")
 		JsonSlurper slurper = new JsonSlurper()
@@ -137,13 +136,13 @@ stage("Cleaning up Artifactory releases") {
 		
 		artifacts.results.each{
 			
-			def urlforDelete = "https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/releases/"
-			def firstIndex = "https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/storage/releases/"
+			def urlforDelete = "https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${mavenReleasesRepoName}/"
+			def firstIndex = "https://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/storage/${mavenReleasesRepoName}/"
 			def lastPartUrl = it.uri.substring(firstIndex.length(), it.uri.length())
 			
 			if(!dry) {
 				println "Will be deleted: ${urlforDelete}${lastPartUrl}" 
-				sh("curl -udev:dev1234 -XDELETE ${urlforDelete}${lastPartUrl}")
+				sh("curl -u${mavenRepoUser}:${mavenRepoPwd} -XDELETE ${urlforDelete}${lastPartUrl}")
 			}
 			else {
 				println "dryRun only ... ${urlforDelete}${lastPartUrl} would have been deleted."
