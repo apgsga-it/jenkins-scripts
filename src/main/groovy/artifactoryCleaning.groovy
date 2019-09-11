@@ -1,7 +1,3 @@
-@Grab('org.jfrog.artifactory.client:artifactory-java-client-services:2.6.0')
-
-import org.jfrog.artifactory.client.*
-
 println "Starting to clean Artifactory Repositories ...."
 
 
@@ -18,6 +14,18 @@ def testv = resolver.resolve("testv")
 println "testv: ${testv}"
 */
 
-def artifactory = ArtifactoryClientBuilder.create().setUrl(env.ARTIFACTORY_SERVER_ID).setUsername(mavenRepoUser).setPassword(mavenRepoPwd).build();
+//def artifactory = ArtifactoryClientBuilder.create().setUrl(env.ARTIFACTORY_SERVER_ID).setUsername(mavenRepoUser).setPassword(mavenRepoPwd).build();
+
+
+withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
+	usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+
+u = "${USERNAME}"
+p = "${PASSWORD}"
+}
+
+
+println "${u} / ${p}"
+
 
 println "Cleaning Artifactory Repositories - DONE"
