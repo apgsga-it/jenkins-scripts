@@ -1,26 +1,47 @@
+plugins {
+	id 'com.jfrog.artifactory' version '4.7.3'
+  }
+
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'java'
 
 // In this section you declare where to find the dependencies of your project
 
-repositories {
+	repositories {
+		//mavenLocal()
+		maven { 
+		  credentials {
+            	username mavenRepoUser
+            	password mavenRepoPwd
+        	}
+			url "${mavenRepoBaseUrl}/${mavenRepoName}" 
+		}
+		
 		maven {
 			url 'http://repo.spring.io/plugins-release'
 		}
-		maven { 
-		  credentials {
-            	username "$repoUser"
-            	password System.env.REPO_RO_PASSWD
-        	}
-			url "${mavenRepoBaseUrl}/repo" 
+	}
+
+	/*	
+	repositories {
+		maven {
+			url 'http://repo.spring.io/plugins-release'
 		}
-
+		maven {
+		  credentials {
+				username "$repoUser"
+				password System.env.REPO_RO_PASSWD
+			}
+			url "${mavenRepoBaseUrl}/repo"
+		}
 }
-
+*/
 
 dependencies {
 	compile group: 'org.jenkins-ci.main', name: 'jenkins-core', version: '2.85'
 	compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
-	compile group: 'org.jfrog.artifactory.client', name: 'artifactory-java-client-services'
+	compile group: 'org.jfrog.artifactory.client', name: 'artifactory-java-client-services', version: '2.6.0'
 }
 
