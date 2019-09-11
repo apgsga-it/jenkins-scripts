@@ -31,13 +31,13 @@ import groovy.json.JsonSlurperClassic
 			
 			println "${repoUser} / ${repoPwd}"
 			
-			def curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${requestUrl}"
+			def curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${requestUrl} > out.txt"
 			
 			def res = sh script:curlCmd, returnStatus:true
 			
 			println "res: ${res}"
 			
-			def results = new JsonSlurper().parseText(res)
+			def results = new JsonSlurper().parseText(new File("out.txt").text)
 			
 			results.results.each { result ->
 				println "${result.path}"
