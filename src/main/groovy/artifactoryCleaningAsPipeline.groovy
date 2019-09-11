@@ -6,7 +6,13 @@
 		
 	stage(repo) {
 		println "this was a test"
-		println "mavenRepoBaseUrl: ${mavenRepoBaseUrl}"
+		
+		
+		
+		println "${env.ARTIFACTORY_SERVER_ID}"
+		
+		
+		
 	}
 	
 }
