@@ -53,7 +53,7 @@ import groovy.json.JsonSlurperClassic
 				}
 				
 				println "Following Artifact will be deleted (resultPath): ${resultPath}"
-				curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X DELETE ${artifactoryUrl}/resultPath"
+				curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X DELETE ${artifactoryUrl}/${resultPath}"
 				res = sh script:curlCmd, returnStdout:true
 				println "res from delete: ${res}"
 	
