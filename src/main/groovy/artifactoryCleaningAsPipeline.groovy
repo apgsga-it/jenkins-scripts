@@ -25,6 +25,9 @@
 		
 		println "${u} / ${p}"
 		
+		def res = sh script:"curl www.google.com", returnStatus:true
+		
+		println "res: ${res}"
 		
 	}
 	
