@@ -21,5 +21,6 @@ repositories {
 dependencies {
 	compile group: 'org.jenkins-ci.main', name: 'jenkins-core', version: '2.85'
 	compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+	compile group: 'org.jfrog.artifactory.client', name: 'artifactory-java-client-services'
 }
 
