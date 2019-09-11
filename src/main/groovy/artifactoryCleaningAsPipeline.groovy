@@ -21,7 +21,8 @@
 			}
 		
 		
-		println "${server.username}"	
+		println "${server.username}"
+		println "${server.password}"
 		
 	}
 	
