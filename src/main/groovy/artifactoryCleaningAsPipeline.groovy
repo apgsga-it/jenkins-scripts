@@ -1,3 +1,4 @@
+#!groovy
 import org.jfrog.artifactory.client.ArtifactoryClientBuilder
 
 ["repo1","repo2"].each {repo -> 
