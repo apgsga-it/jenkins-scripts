@@ -11,18 +11,20 @@
 		
 		println "${env.ARTIFACTORY_SERVER_ID}"
 		
-		def server = Artifactory.server env.ARTIFACTORY_SERVER_ID
+//		def server = Artifactory.server env.ARTIFACTORY_SERVER_ID
+		def u
+		def p
 		
 			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
 					usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 		
-				server.username = "${USERNAME}"
-				server.password = "${PASSWORD}"
+				u = "${USERNAME}"
+				p = "${PASSWORD}"
 			}
 		
 		
-		println "${server.username}"
-		println "${server.password}"
+		println "${u} / ${p}"
+		
 		
 	}
 	
