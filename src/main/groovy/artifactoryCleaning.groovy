@@ -1,4 +1,4 @@
-import org.jfrog.artifactory.client.ArtifactoryClientBuilder
+import org.jfrog.artifactory.client.*
 
 println "Starting to clean Artifactory Repositories ...."
 
