@@ -1,9 +1,9 @@
 #!groovy
+import groovy.json.JsonSlurper
+import groovy.json.JsonSlurperClassic
 
 ["repo1","repo2"].each {repo -> 
 
-	//def artifactory = ArtifactoryClientBuilder.create().setUrl(mavenRepoBaseUrl).setUsername(mavenRepoUser).setPassword(mavenRepoPwd).build();
-		
 	stage(repo) {
 		
 		node {
@@ -37,9 +37,13 @@
 			
 			println "res: ${res}"
 			
+			def results = new JsonSlurper().parseText(res)
 			
-			
-			
+			results.results.each { result ->
+				println "${result.path}"
+				println "${result.name}"
+			}			
+						
 			
 			
 		}
