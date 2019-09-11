@@ -11,7 +11,7 @@ import groovy.json.JsonSlurperClassic
 			println "this was a test"
 
 			
-			def query = 'items.find({"type":"file","name":{"$match":"it21gui-dist-zip-9.1.0.ADMIN-UIMIG-102.zip"}})'
+			def query = 'items.find({"type":"file","name":{"$match":"it21gui-dist-zip-9.1.0.ADMIN-UIMIG-106.zip"}})'
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
 			
@@ -53,8 +53,7 @@ import groovy.json.JsonSlurperClassic
 				}
 				
 				println "Following Artifact will be deleted (resultPath): ${resultPath}"
-				def deleteData = "path:${resultPath}"				
-				curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X DELETE -d '${deleteData}' ${artifactoryUrl}"
+				curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X DELETE ${artifactoryUrl}/resultPath"
 				res = sh script:curlCmd, returnStdout:true
 				println "res from delete: ${res}"
 	
