@@ -13,7 +13,7 @@ import groovy.json.JsonSlurperClassic
 			
 			def query = 'items.find({"type":"file","name":{"$match":"it21gui-dist-zip-9.1.0.ADMIN-UIMIG-102.zip"}})'
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga"
-			def requestUrl = "${artifactoryUrl}/api/search/aql"
+			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
 			
 			
 			println "${env.ARTIFACTORY_SERVER_ID}"
@@ -31,24 +31,34 @@ import groovy.json.JsonSlurperClassic
 			
 			println "${repoUser} / ${repoPwd}"
 			
-			def curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${requestUrl}"
+			def curlCmd
+			def res
 			
-			def res = sh script:curlCmd, returnStdout:true
 			
-			println "res: ${res}"
+			curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${searchRequestUrl}"
+			res = sh script:curlCmd, returnStdout:true
+			println "res from search: ${res}"
 			
 			def results = new JsonSlurper().parseText(res)
 			
 			results.results.each { result ->
-				println "${result.path}"
-				println "${result.name}"
-			}			
-						
-			
-			
-		}
-		
-	}
+				println "${result.path}/${result.name} : will be deleted"
+				def resultPath
+				
+				if (result.path.toString().equals(".")) {
+					resultPath = result.repo + "/" + result.name
+				}
+				else {
+					resultPath = result.repo + "/" + result.path + "/" + result.name
+				}
+				
+				println "Following Artifact will be deleted (resultPath): ${resultPath}"				
+				curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X DELETE -d 'path:${resultPath}'"
+				res = sh script:curlCmd, returnStdout:true
+				println "res from delete: ${res}"
 	
+			}			
+		}
+	}
 }
 
