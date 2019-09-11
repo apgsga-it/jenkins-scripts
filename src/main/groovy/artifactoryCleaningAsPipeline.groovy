@@ -33,7 +33,7 @@
 			
 			def curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d \"items.find({\"type\":\"file\",\"name\":{\"\$match\":\"it21gui-dist-zip-9.1.0.ADMIN-UIMIG-1160.zip\"}})\" http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql"
 			
-			def res = sh script:curlCmd, returnStatus:true, 
+			def res = sh script:curlCmd, returnStatus:true
 			
 			println "res: ${res}"
 			
