@@ -15,7 +15,15 @@ println reposDefinition
 
 
 def repositories = new JsonSlurper().parseText(reposDefinition) 
+def repoUser
+def repoPwd
 
+withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
+			usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+
+		repoUser = "${USERNAME}"
+		repoPwd = "${PASSWORD}"
+}
 
 repositories.repositories.each {repo -> 
 
@@ -23,29 +31,12 @@ repositories.repositories.each {repo ->
 		
 		node {
 
-			def maxDate = "2019-08-01"
-			def fileName = "it21gui-dist-zip-9.1.0.ADMIN-UIMIG-9*.zip"
-					
-			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${maxDate}\"}, \"type\":\"file\", \"name\":{\"\$match\":\"${fileName}\"}})"
+			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"name\":{\"\$match\":\"${repo.fileNamePattern}\"}})"
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/${env.ARTIFACTORY_SERVER_ID}"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
 			
-			def repoUser
-			def repoPwd
-			
-			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
-						usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-			
-					repoUser = "${USERNAME}"
-					repoPwd = "${PASSWORD}"
-			}
-			
-			
-			println "${repoUser} / ${repoPwd}"
-			
 			def curlCmd
 			def res
-			
 			
 			curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${searchRequestUrl}"
 			res = sh script:curlCmd, returnStdout:true
