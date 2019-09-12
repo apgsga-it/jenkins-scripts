@@ -2,7 +2,7 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonSlurperClassic
 
-["repo1","repo2"].each {repo -> 
+["releases-test","repo2"].each {repo -> 
 
 	stage(repo) {
 		
@@ -11,7 +11,7 @@ import groovy.json.JsonSlurperClassic
 			
 			
 					
-			def query = "items.find({\"repo\":\"releases-test\", \"created\":{\"\$lt\":\"2019-08-01\"}, \"type\":\"file\", \"name\":{\"\$match\":\"it21gui-dist-zip-9.1.0.ADMIN-UIMIG-9*.zip\"}})"
+			def query = "items.find({\"repo\":\"${repo}\", \"created\":{\"\$lt\":\"2019-08-01\"}, \"type\":\"file\", \"name\":{\"\$match\":\"it21gui-dist-zip-9.1.0.ADMIN-UIMIG-9*.zip\"}})"
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
 			
