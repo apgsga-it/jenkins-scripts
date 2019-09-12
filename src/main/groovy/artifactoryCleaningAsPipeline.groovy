@@ -28,11 +28,11 @@ repositories.repositories.each {repo ->
 			
 			curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${searchRequestUrl}"
 			res = sh script:curlCmd, returnStdout:true
-			println "res from search: ${res}"
+//			println "res from search: ${res}"
 			
 			def results = new JsonSlurper().parseText(res)
 			
-//			println "Total Artifacts found: ${results.range.total}"
+			println "Total Artifacts found: ${results.range.total}"
 			
 			results.results.each { result ->
 				println "${result.path}/${result.name} : will be deleted"
