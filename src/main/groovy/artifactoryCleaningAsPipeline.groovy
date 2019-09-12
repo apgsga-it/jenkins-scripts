@@ -35,7 +35,7 @@ repositories.repositories.each {repo ->
 			println "Total Artifacts found: ${results.range.total}"
 			
 			results.results.each { result ->
-				println "${result.path}/${result.name} : will be deleted"
+//				println "${result.path}/${result.name} : will be deleted"
 				def resultPath
 				
 				if (result.path.toString().equals(".")) {
