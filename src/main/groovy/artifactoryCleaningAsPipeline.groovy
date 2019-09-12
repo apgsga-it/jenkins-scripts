@@ -2,6 +2,17 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonSlurperClassic
 
+
+
+
+def reposDefinition = env.reposDefinitionAsJson
+
+
+println "reposDefinition"
+println "==============="
+println reposDefinition
+
+
 def repositories = ["releases-test","repo2"] 
 
 
