@@ -2,25 +2,13 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonSlurperClassic
 
-
-
-
 def reposDefinition = env.reposDefinitionAsJson
-
-
-println "reposDefinition"
-println "==============="
-println reposDefinition
-
-
-
 def repositories = new JsonSlurper().parseText(reposDefinition) 
 def repoUser
 def repoPwd
 
 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
 			usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-
 		repoUser = "${USERNAME}"
 		repoPwd = "${PASSWORD}"
 }
@@ -44,7 +32,7 @@ repositories.repositories.each {repo ->
 			
 			def results = new JsonSlurper().parseText(res)
 			
-			println "Total Artifacts found: ${results.range.total}"
+//			println "Total Artifacts found: ${results.range.total}"
 			
 			results.results.each { result ->
 				println "${result.path}/${result.name} : will be deleted"
@@ -57,7 +45,7 @@ repositories.repositories.each {repo ->
 					resultPath = result.repo + "/" + result.path + "/" + result.name
 				}
 				
-				println "Following Artifact will be deleted (resultPath): ${resultPath}"
+//				println "Following Artifact will be deleted (resultPath): ${resultPath}"
 //				curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X DELETE ${artifactoryUrl}/${resultPath}"
 //				res = sh script:curlCmd, returnStdout:true
 //				println "res from delete: ${res}"
