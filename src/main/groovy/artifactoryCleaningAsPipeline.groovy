@@ -2,31 +2,31 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonSlurperClassic
 
-["releases-test","repo2"].each {repo -> 
+def repositories = ["releases-test","repo2"] 
+
+
+repositories.each {repo -> 
 
 	stage(repo) {
 		
 		node {
 
-			
-			
+			def maxDate = "2019-08-01"
+			def fileName = "it21gui-dist-zip-9.1.0.ADMIN-UIMIG-9*.zip"
 					
-			def query = "items.find({\"repo\":\"${repo}\", \"created\":{\"\$lt\":\"2019-08-01\"}, \"type\":\"file\", \"name\":{\"\$match\":\"it21gui-dist-zip-9.1.0.ADMIN-UIMIG-9*.zip\"}})"
-			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga"
+			def query = "items.find({\"repo\":\"${repo}\", \"created\":{\"\$lt\":\"${maxDate}\"}, \"type\":\"file\", \"name\":{\"\$match\":\"${fileName}\"}})"
+			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/${env.ARTIFACTORY_SERVER_ID}"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
-			
-			
-			println "${env.ARTIFACTORY_SERVER_ID}"
 			
 			def repoUser
 			def repoPwd
 			
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
+			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
 						usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 			
 					repoUser = "${USERNAME}"
 					repoPwd = "${PASSWORD}"
-				}
+			}
 			
 			
 			println "${repoUser} / ${repoPwd}"
