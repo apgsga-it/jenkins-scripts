@@ -17,7 +17,7 @@ println reposDefinition
 def repositories = new JsonSlurper().parseText(reposDefinition) 
 
 
-repositories.each {repo -> 
+repositories.repositories.each {repo -> 
 
 	stage(repo.name) {
 		
