@@ -13,19 +13,20 @@ println "==============="
 println reposDefinition
 
 
-def repositories = ["releases-test","repo2"] 
+
+def repositories = new JsonSlurper().parseText(reposDefinition) 
 
 
 repositories.each {repo -> 
 
-	stage(repo) {
+	stage(repo.name) {
 		
 		node {
 
 			def maxDate = "2019-08-01"
 			def fileName = "it21gui-dist-zip-9.1.0.ADMIN-UIMIG-9*.zip"
 					
-			def query = "items.find({\"repo\":\"${repo}\", \"created\":{\"\$lt\":\"${maxDate}\"}, \"type\":\"file\", \"name\":{\"\$match\":\"${fileName}\"}})"
+			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${maxDate}\"}, \"type\":\"file\", \"name\":{\"\$match\":\"${fileName}\"}})"
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/${env.ARTIFACTORY_SERVER_ID}"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
 			
