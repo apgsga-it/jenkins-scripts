@@ -76,7 +76,7 @@ private def getExcludedReleases() {
 private def getExcludedReleases() {
 	def prodReleases = ["9.1.0.ADMIN-UIMIG-46","9.1.0.ADMIN-UIMIG-198","9.1.0.ADMIN-UIMIG-214","9.1.0.ADMIN-UIMIG-234","9.1.0.ADMIN-UIMIG-237","9.1.0.ADMIN-UIMIG-240","9.1.0.ADMIN-UIMIG-249","9.1.0.ADMIN-UIMIG-252","9.1.0.ADMIN-UIMIG-255","9.1.0.ADMIN-UIMIG-258","9.1.0.ADMIN-UIMIG-261"]
 	def releasesToBeExcluded = []
-	prodReleases.forEach{r -> 
+	prodReleases.each{r -> 
 		releasesToBeExcluded.add(getSingleAQLExcludeReleaseStatement(r))
 	}
 	return releasesToBeExcluded.join("")
