@@ -20,13 +20,8 @@ repositories.repositories.each {repo ->
 		
 		node {
 
-			def excludedReleases = getExcludedReleases()
 
-			println "excludedReleases: ${excludedReleases}"
-						
-			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"\$and\": [{\"name\":{\"\$match\":\"${repo.fileNamePattern}\"}}${excludedReleases}]})"
-			
-			println "query: ${query}"
+			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"\$and\": [{\"name\":{\"\$match\":\"${repo.fileNamePattern}\"}}${getExcludedReleases()}]})"
 			
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/${env.ARTIFACTORY_SERVER_ID}"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
@@ -36,7 +31,6 @@ repositories.repositories.each {repo ->
 			
 			curlCmd = "curl -L -u ${repoUser}:${repoPwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${searchRequestUrl}"
 			res = sh script:curlCmd, returnStdout:true
-//			println "res from search: ${res}"
 			
 			def results = new JsonSlurper().parseText(res)
 			
@@ -83,10 +77,8 @@ private def getExcludedReleases() {
 }
 
 private def getSingleAQLExcludeReleaseStatement(def release) {
-	println "within getSingleAQLExcludeReleaseStatement"
 	def firstPart = ",{\"name\":{\"\$nmatch\":\"*"
 	def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
 	def lastPart = "*\"}}"
-	println "getSingleAQLExcludeReleaseStatement returning: ${firstPart}${extractedRelease}${lastPart}"
 	return "${firstPart}${extractedRelease}${lastPart}"
 }
