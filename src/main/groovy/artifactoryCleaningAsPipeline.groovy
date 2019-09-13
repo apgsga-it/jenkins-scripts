@@ -63,12 +63,23 @@ repositories.repositories.each {repo ->
 	}
 }
 
+
+// JHE(13.09.2019): At best, getExcludedReleases() method could be written using a Closure, but seems we're encoutnering the following bug: https://issues.jenkins-ci.org/browse/JENKINS-56330
+//					So for now, the method is as the below one ... :(
+/*
 private def getExcludedReleases() {
 	def prodReleases = ["9.1.0.ADMIN-UIMIG-46","9.1.0.ADMIN-UIMIG-198","9.1.0.ADMIN-UIMIG-214","9.1.0.ADMIN-UIMIG-234","9.1.0.ADMIN-UIMIG-237","9.1.0.ADMIN-UIMIG-240","9.1.0.ADMIN-UIMIG-249","9.1.0.ADMIN-UIMIG-252","9.1.0.ADMIN-UIMIG-255","9.1.0.ADMIN-UIMIG-258","9.1.0.ADMIN-UIMIG-261"]
-	def releasesToBeExcluded
-	releasesToBeExcluded = prodReleases.stream().map{r -> getSingleAQLExcludeReleaseStatement(r)}.collect(Collectors.toList()).join("")
-	println "getExcludedReleases reutnring: ${releasesToBeExcluded}"
-	return releasesToBeExcluded
+	return prodReleases.stream().map{r -> getSingleAQLExcludeReleaseStatement(r)}.collect(Collectors.toList()).join("")
+}
+*/
+
+private def getExcludedReleases() {
+	def prodReleases = ["9.1.0.ADMIN-UIMIG-46","9.1.0.ADMIN-UIMIG-198","9.1.0.ADMIN-UIMIG-214","9.1.0.ADMIN-UIMIG-234","9.1.0.ADMIN-UIMIG-237","9.1.0.ADMIN-UIMIG-240","9.1.0.ADMIN-UIMIG-249","9.1.0.ADMIN-UIMIG-252","9.1.0.ADMIN-UIMIG-255","9.1.0.ADMIN-UIMIG-258","9.1.0.ADMIN-UIMIG-261"]
+	def releasesToBeExcluded = []
+	prodReleases.forEach{r -> 
+		releasesToBeExcluded.add(getSingleAQLExcludeReleaseStatement(r))
+	}
+	return releasesToBeExcluded.join("")
 }
 
 private def getSingleAQLExcludeReleaseStatement(def release) {
