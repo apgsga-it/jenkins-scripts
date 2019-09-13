@@ -67,8 +67,10 @@ private def getExcludedReleases() {
 
 private def getExcludedReleases() {
 	def prodReleases = sh script:'/opt/apg-patch-cli/bin/apsrevcli.sh -gr dev-chpi211', returnStdout:true
+	println "prodReleases : ${prodReleases}"
 	def releasesToBeExcluded = []
 	prodReleases.each{r -> 
+		println "r: ${r}"
 		releasesToBeExcluded.add(getSingleAQLExcludeReleaseStatement(r))
 	}
 	return releasesToBeExcluded.join("")
