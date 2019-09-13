@@ -19,7 +19,7 @@ repositories.repositories.each {repo ->
 		
 		node {
 
-			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"name\":{\"\$match\":\"${repo.fileNamePattern}\"}})"
+			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"\$and\": [{\"name\":{\"\$match\":\"${repo.fileNamePattern}\"}},{\"name\":{\"\$nmatch\":\"*9.1.0.ADMIN-UIMIG-198*\"}}]})"
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/${env.ARTIFACTORY_SERVER_ID}"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
 			
@@ -35,7 +35,7 @@ repositories.repositories.each {repo ->
 			println "Total Artifacts found: ${results.range.total}"
 			
 			results.results.each { result ->
-//				println "${result.path}/${result.name} : will be deleted"
+				println "${result.path}/${result.name} : will be deleted"
 				def resultPath
 				
 				if (result.path.toString().equals(".")) {
