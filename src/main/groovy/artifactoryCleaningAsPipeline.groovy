@@ -63,16 +63,19 @@ repositories.repositories.each {repo ->
 	}
 }
 
-private def getSingleAQLExcludeReleaseStatement(def release) {
-	def firstPart = ",{\"name\":{\"\$nmatch\":\"*"
-	def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
-	def lastPart = "*\"}}"
-	return "${firstPart}${extractedRelease}${lastPart}"
-}
-
 private def getExcludedReleases() {
 	def prodReleases = ["9.1.0.ADMIN-UIMIG-46","9.1.0.ADMIN-UIMIG-198","9.1.0.ADMIN-UIMIG-214","9.1.0.ADMIN-UIMIG-234","9.1.0.ADMIN-UIMIG-237","9.1.0.ADMIN-UIMIG-240","9.1.0.ADMIN-UIMIG-249","9.1.0.ADMIN-UIMIG-252","9.1.0.ADMIN-UIMIG-255","9.1.0.ADMIN-UIMIG-258","9.1.0.ADMIN-UIMIG-261"]
 	def releasesToBeExcluded
 	releasesToBeExcluded = prodReleases.stream().map{r -> getSingleAQLExcludeReleaseStatement(r)}.collect(Collectors.toList()).join("")
+	println "getExcludedReleases reutnring: ${releasesToBeExcluded}"
 	return releasesToBeExcluded
+}
+
+private def getSingleAQLExcludeReleaseStatement(def release) {
+	println "within getSingleAQLExcludeReleaseStatement"
+	def firstPart = ",{\"name\":{\"\$nmatch\":\"*"
+	def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
+	def lastPart = "*\"}}"
+	println "getSingleAQLExcludeReleaseStatement returning: ${firstPart}${extractedRelease}${lastPart}"
+	return "${firstPart}${extractedRelease}${lastPart}"
 }
