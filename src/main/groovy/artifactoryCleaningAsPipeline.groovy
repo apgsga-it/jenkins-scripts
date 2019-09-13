@@ -24,7 +24,7 @@ repositories.repositories.each {repo ->
 
 			println "excludedReleases: ${excludedReleases}"
 						
-			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"\$and\": [{\"name\":{\"\$match\":\"${repo.fileNamePattern}\"}}${getExcludeNameFilter()}]})"
+			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"\$and\": [{\"name\":{\"\$match\":\"${repo.fileNamePattern}\"}}${excludedReleases}]})"
 			
 			println "query: ${query}"
 			
