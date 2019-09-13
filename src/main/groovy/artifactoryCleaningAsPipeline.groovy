@@ -1,6 +1,7 @@
 #!groovy
 import groovy.json.JsonSlurper
 import groovy.json.JsonSlurperClassic
+import java.util.stream.Collectors
 
 def reposDefinition = env.reposDefinitionAsJson
 def repositories = new JsonSlurper().parseText(reposDefinition) 
