@@ -31,10 +31,20 @@ repositories.repositories.each {repo ->
 			res = sh script:curlCmd, returnStdout:true
 			
 			def results = new JsonSlurper().parseText(res)
+			def resultsToBeParsed
 			
-			println "Total Artifacts found: ${results.range.total}"
+			if(!repo.minNbFiles.equals("0")) {
+				resultsToBeParsed = resultsWithoutArtifactToBeKept(results)
+			}else {
+				resultsToBeParsed = results.results
+			}
 			
-			results.results.each { result ->
+			println "Total Artifacts within results: ${results.range.total}"
+			println "results: ${results}"
+			println "Total Artifacts within resultsToBeParsed: ${resultsToBeParsed.range.total}"
+			println "resultsToBeParsed: ${resultsToBeParsed}"
+			
+			resultsToBeParsed.each { result ->
 				println "${result.path}/${result.name} : will be deleted"
 				def resultPath
 				
@@ -64,13 +74,10 @@ private def getExcludedReleases() {
 	return prodReleases.stream().map{r -> getSingleAQLExcludeReleaseStatement(r)}.collect(Collectors.toList()).join("")
 }
 */
-
 private def getExcludedReleases() {
 	def prodReleases = sh script:'/opt/apg-patch-cli/bin/apsrevcli.sh -gr dev-chpi211', returnStdout:true
-	println "prodReleases : ${prodReleases}"
 	def releasesToBeExcluded = []
 	prodReleases.split(",").each{r -> 
-		println "r: ${r}"
 		releasesToBeExcluded.add(getSingleAQLExcludeReleaseStatement(r))
 	}
 	return releasesToBeExcluded.join("")
@@ -81,4 +88,8 @@ private def getSingleAQLExcludeReleaseStatement(def release) {
 	def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
 	def lastPart = "*\"}}"
 	return "${firstPart}${extractedRelease}${lastPart}"
+}
+
+private def resultsWithoutArtifactToBeKept(def results) {
+	
 }
