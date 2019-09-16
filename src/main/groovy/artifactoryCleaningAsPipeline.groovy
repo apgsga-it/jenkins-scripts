@@ -44,7 +44,7 @@ repositories.repositories.each {repo ->
 			println "Total Artifacts within resultsToBeParsed: ${resultsToBeParsed.range.total}"
 			println "resultsToBeParsed: ${resultsToBeParsed}"
 			
-			resultsToBeParsed.each { result ->
+			resultsToBeParsed.results.each { result ->
 				println "${result.path}/${result.name} : will be deleted"
 				def resultPath
 				
