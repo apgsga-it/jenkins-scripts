@@ -91,5 +91,5 @@ private def getSingleAQLExcludeReleaseStatement(def release) {
 }
 
 private def resultsWithoutArtifactToBeKept(def results) {
-	
+	return results;
 }
