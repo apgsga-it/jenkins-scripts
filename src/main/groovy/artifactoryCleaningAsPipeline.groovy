@@ -19,7 +19,7 @@ repositories.repositories.each {repo ->
 		
 		node {
 
-			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"\$and\": [{\"name\":{\"\$match\":\"${repo.fileNamePattern}\"}}${getExcludedReleases()}]})"
+			def query = "items.find({\"repo\":\"${repo.name}\", \"created\":{\"\$lt\":\"${repo.maxFileDate}\"}, \"type\":\"file\", \"\$and\": [{\"name\":{\"\$match\":\"${repo.fileNamePattern}\"}}${getExcludedReleases()}]}).include(\"property.*\")"
 			
 			def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/${env.ARTIFACTORY_SERVER_ID}"
 			def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
