@@ -7,12 +7,19 @@ def repositories = new JsonSlurper().parseText(reposDefinition)
 def repoUser
 def repoPwd
 
+def targetSystemMappingFilePath = env.targetSystemMappingFilePath ?: "/etc/opt/apg-patch-common/TargetSystemMappings.json"
+def revisionsFilePath = env.revisionsFilePath ?: "/var/opt/apg-patch-cli/Revisions.json"
+
 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
 			usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 		repoUser = "${USERNAME}"
 		repoPwd = "${PASSWORD}"
 }
 
+stage("Pre-requisite") {
+	assert new File(targetSystemMappingFilePath).exists() : "${targetSystemMappingFilePath} does not exist"
+	assert new File(revisionsFilePath).exists() : "${revisionsFilePath} does not exist"
+}
 
 stage("Getting targetInstances") {
 	println "Storing in a map all targetInstances info"
