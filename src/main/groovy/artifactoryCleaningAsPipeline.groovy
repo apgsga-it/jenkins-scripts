@@ -48,7 +48,7 @@ stage("Loading Production Releases") {
 
 
 
-private def loadTargetInstances() {
+def loadTargetInstances() {
 	def targetsInstancesAsJson = new JsonSlurper().parse(new File(targetSystemMappingFilePath))
 	// JHE: could be as simple as that, but : https://issues.jenkins-ci.org/browse/JENKINS-56330
 	//targetInstances = targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
