@@ -25,7 +25,9 @@ curlCmd = "curl -L -u ${username}:${userpwd} -X POST -H 'Content-Type: text/plai
 
 println "curlCmd : ${curlCmd}"
 
-def proc = curlCmd.execute()
+def curlCmdAsArray = ["curl","-L","-u","${username}:${userpwd}","-X","POST","-H","Content-Type: text/plain","-d","items.find({\\\"type\\\":\\\"file\\\",\\\"\$and\\\": [{\\\"name\\\":{\\\"\$match\\\":\\\"*9.1.0.ADMIN-UIMIG-198*\\\"}},{\\\"name\\\":{\\\"\$nmatch\\\":\\\"*zip*\\\"}}]})","http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql"]
+
+def proc = curlCmdAsArray.execute()
 def sout = new StringBuilder()
 def serr = new StringBuilder()
 proc.consumeProcessOutput(sout,serr)
