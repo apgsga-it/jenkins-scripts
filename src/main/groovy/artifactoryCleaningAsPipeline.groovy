@@ -27,17 +27,15 @@ stage("Pre-requisite") {
 
 stage("Getting targetInstances") {
 	def targetsInstancesAsJson = new JsonSlurper().parse(new File(targetSystemMappingFilePath))
-
-	def myClosure = {t -> t.name}
-	targetsInstancesAsJson.targetInstances.stream().map{myClosure}.collect()(Collectors.toList())
 	
-	println "targetsInstancesAsJson : ${targetsInstancesAsJson}"
+	// JHE: could be as simple as that, but : https://issues.jenkins-ci.org/browse/JENKINS-56330 
+	//targetInstances = targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
+			
+	targetsInstancesAsJson.targetInstances.each { target ->
+		targetInstances.add(target.name)	
+	}
 	
-	prodReleases.stream().map{r -> getSingleAQLExcludeReleaseStatement(r)}.collect(Collectors.toList()).join("")
-		
-//	targetsInstancesAsJson.targetInstances.each { target ->
-//		
-//	}
+	println "Following targetInstances have been loaded: ${targetInstances}"
 }
 
 stage("Getting Releases") {
