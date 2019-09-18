@@ -13,8 +13,27 @@ withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifa
 		repoPwd = "${PASSWORD}"
 }
 
-repositories.repositories.each {repo -> 
 
+stage("Getting targetInstances") {
+	println "Storing in a map all targetInstances info"
+}
+
+stage("Getting Releases") {
+	println "Storing in a map all info from releases"
+}
+
+stage("Getting Production Releases") {
+	
+}
+
+
+// iterate over all Repositories, fetch released Artifact, check not in prod, delete
+
+
+
+/*
+repositories.repositories.each {repo -> 
+	
 	stage(repo.name) {
 		
 		node {
@@ -64,6 +83,9 @@ repositories.repositories.each {repo ->
 		}
 	}
 }
+*/
+
+
 
 
 // JHE(13.09.2019): At best, getExcludedReleases() method could be written using a Closure, but seems we're encoutnering the following bug: https://issues.jenkins-ci.org/browse/JENKINS-56330
@@ -74,6 +96,7 @@ private def getExcludedReleases() {
 	return prodReleases.stream().map{r -> getSingleAQLExcludeReleaseStatement(r)}.collect(Collectors.toList()).join("")
 }
 */
+/*
 private def getExcludedReleases() {
 	def prodReleases = sh script:'/opt/apg-patch-cli/bin/apsrevcli.sh -gr dev-chpi211', returnStdout:true
 	def releasesToBeExcluded = []
@@ -82,14 +105,17 @@ private def getExcludedReleases() {
 	}
 	return releasesToBeExcluded.join("")
 }
-
+*/
+/*
 private def getSingleAQLExcludeReleaseStatement(def release) {
 	def firstPart = ",{\"name\":{\"\$nmatch\":\"*"
 	def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
 	def lastPart = "*\"}}"
 	return "${firstPart}${extractedRelease}${lastPart}"
 }
-
+*/
+/*
 private def resultsWithoutArtifactToBeKept(def results) {
 	return results;
 }
+*/
