@@ -13,6 +13,7 @@ def targetSystemMappingFilePath = env.targetSystemMappingFilePath ?: "/etc/opt/a
 def revisionsFilePath = env.revisionsFilePath ?: "/var/opt/apg-patch-cli/Revisions.json"
 
 def targetInstances = []
+def targetToReleases = [:]
 
 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
 			usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
@@ -23,23 +24,18 @@ withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifa
 stage("Pre-requisite") {
 	assert new File(targetSystemMappingFilePath).exists() : "${targetSystemMappingFilePath} does not exist"
 	assert new File(revisionsFilePath).exists() : "${revisionsFilePath} does not exist"
+	def apsrevcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh"
+	def result = sh script:apsrevcliCmd, returnStatus:true
+	assert result == 0 : "Problem whilst trying to call apsrevcli with following command: ${apsrevcliCmd}"
+	
 }
 
 stage("Getting targetInstances") {
-	def targetsInstancesAsJson = new JsonSlurper().parse(new File(targetSystemMappingFilePath))
-	
-	// JHE: could be as simple as that, but : https://issues.jenkins-ci.org/browse/JENKINS-56330 
-	//targetInstances = targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
-			
-	targetsInstancesAsJson.targetInstances.each { target ->
-		targetInstances.add(target.name)	
-	}
-	
-	println "Following targetInstances have been loaded: ${targetInstances}"
+	getTargetInstances()
 }
 
-stage("Getting Releases") {
-	println "Storing in a map all info from releases"
+stage("Getting Revisions") {
+//	def 
 }
 
 stage("Getting Production Releases") {
@@ -50,6 +46,16 @@ stage("Getting Production Releases") {
 // iterate over all Repositories, fetch released Artifact, check not in prod, delete
 
 
+
+private def getTargetInstances() {
+	def targetsInstancesAsJson = new JsonSlurper().parse(new File(targetSystemMappingFilePath))
+	// JHE: could be as simple as that, but : https://issues.jenkins-ci.org/browse/JENKINS-56330
+	//targetInstances = targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
+	targetsInstancesAsJson.targetInstances.each { target ->
+		targetInstances.add(target.name)
+	}
+	println "Following targetInstances have been loaded: ${targetInstances}"
+}
 
 /*
 repositories.repositories.each {repo -> 
