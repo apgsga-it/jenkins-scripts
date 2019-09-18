@@ -23,11 +23,12 @@ withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifa
 
 stage("Pre-requisite") {
 	node() {
-		assert new File(targetSystemMappingFilePath).exists() : "${targetSystemMappingFilePath} does not exist"
-		assert new File(revisionsFilePath).exists() : "${revisionsFilePath} does not exist"
-		def apsrevcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh"
-		def result = sh script:apsrevcliCmd, returnStatus:true
-		assert result == 0 : "Problem while trying to call apsrevcli with following command: ${apsrevcliCmd}"
+			checkPre()
+//		assert new File(targetSystemMappingFilePath).exists() : "${targetSystemMappingFilePath} does not exist"
+//		assert new File(revisionsFilePath).exists() : "${revisionsFilePath} does not exist"
+//		def apsrevcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh"
+//		def result = sh script:apsrevcliCmd, returnStatus:true
+//		assert result == 0 : "Problem while trying to call apsrevcli with following command: ${apsrevcliCmd}"
 	}
 }
 
@@ -46,6 +47,14 @@ stage("Loading Production Releases") {
 
 // iterate over all Repositories, fetch released Artifact, check not in prod, delete
 
+
+def checkPre() {
+	assert new File(targetSystemMappingFilePath).exists() : "${targetSystemMappingFilePath} does not exist"
+	assert new File(revisionsFilePath).exists() : "${revisionsFilePath} does not exist"
+	def apsrevcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh"
+	def result = sh script:apsrevcliCmd, returnStatus:true
+	assert result == 0 : "Problem while trying to call apsrevcli with following command: ${apsrevcliCmd}"
+}
 
 
 def loadTargetInstances() {
