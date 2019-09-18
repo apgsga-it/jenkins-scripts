@@ -28,7 +28,8 @@ stage("Pre-requisite") {
 stage("Getting targetInstances") {
 	def targetsInstancesAsJson = new JsonSlurper().parse(new File(targetSystemMappingFilePath))
 
-	targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
+	def myClosure = {t -> t.name}
+	targetsInstancesAsJson.targetInstances.stream().map{myClosure}.collect()(Collectors.toList())
 	
 	println "targetsInstancesAsJson : ${targetsInstancesAsJson}"
 	
