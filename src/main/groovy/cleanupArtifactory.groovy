@@ -1,4 +1,4 @@
 
 
-println env.artifactoryUser
+println this.getBinding().getVariables()
 println "done"
