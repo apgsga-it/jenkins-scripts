@@ -1,4 +1,4 @@
-
+#!/usr/bin/env groovy
 
 def env = System.getenv()
 def username = env["artifactoryUser"]
@@ -16,17 +16,17 @@ def curlCmd
 def res
 
 
-println "query : ${query}"
-println "searchRequestUrl : ${searchRequestUrl}"
+//println "query : ${query}"
+//println "searchRequestUrl : ${searchRequestUrl}"
 
 //curlCmd = "curl -L -u ${username}:${userpwd} -X POST -H 'Content-Type: text/plain' -d '${query}' ${searchRequestUrl}"
 curlCmd = "curl -L -u ${username}:${userpwd} -X POST -H 'Content-Type: text/plain' -d \"items.find({\\\"type\\\":\\\"file\\\",\\\"\\\$and\\\": [{\\\"name\\\":{\\\"\\\$match\\\":\\\"*9.1.0.ADMIN-UIMIG-198*\\\"}},{\\\"name\\\":{\\\"\\\$nmatch\\\":\\\"*zip*\\\"}}]})\" http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql"
 //curlCmd = "curl -L -u xxx:xxx -X POST -H \"Content-Type: text/plain\" -d \"items.find({\\\"type\\\":\\\"file\\\",\\\"\$and\\\": [{\\\"name\\\":{\\\"\$match\\\":\\\"*9.1.0.ADMIN-UIMIG-198*\\\"}},{\\\"name\\\":{\\\"\$nmatch\\\":\\\"*zip*\\\"}}]})\" http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql"
 
-println "curlCmd : ${curlCmd}"
+//println "curlCmd : ${curlCmd}"
 
-def curlCmdAsArray = ["curl","-L","-u","${username}:${userpwd}","-X","POST","-H","Content-Type: text/plain","-d","items.find({\\\"type\\\":\\\"file\\\",\\\"\$and\\\": [{\\\"name\\\":{\\\"\$match\\\":\\\"*9.1.0.ADMIN-UIMIG-198*\\\"}},{\\\"name\\\":{\\\"\$nmatch\\\":\\\"*zip*\\\"}}]})","http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql"]
-
+def curlCmdAsArray = ["curl","-L","-u","${username}:${userpwd}","-X","POST","-H","Content-Type: text/plain","-d","items.find({\\\"type\\\":\\\"file\\\",\\\"\\\$and\\\": [{\\\"name\\\":{\\\"\\\$match\\\":\\\"*9.1.0.ADMIN-UIMIG-198*\\\"}},{\\\"name\\\":{\\\"\\\$nmatch\\\":\\\"*zip*\\\"}}]})","http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql"]
+println "curlCmdAsArray : ${curlCmdAsArray}"
 def proc = curlCmdAsArray.execute()
 def sout = new StringBuilder()
 def serr = new StringBuilder()
