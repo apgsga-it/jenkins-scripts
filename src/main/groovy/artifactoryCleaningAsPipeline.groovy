@@ -1,4 +1,6 @@
 #!groovy
+import java.util.stream.Collectors
+
 import groovy.json.JsonSlurper
 import groovy.json.JsonSlurperClassic
 
@@ -9,6 +11,8 @@ def repoPwd
 
 def targetSystemMappingFilePath = env.targetSystemMappingFilePath ?: "/etc/opt/apg-patch-common/TargetSystemMappings.json"
 def revisionsFilePath = env.revisionsFilePath ?: "/var/opt/apg-patch-cli/Revisions.json"
+
+def targetInstances = []
 
 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
 			usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
@@ -22,7 +26,17 @@ stage("Pre-requisite") {
 }
 
 stage("Getting targetInstances") {
-	println "Storing in a map all targetInstances info"
+	def targetsInstancesAsJson = new JsonSlurper().parse(new File(targetSystemMappingFilePath))
+
+	targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
+	
+	println "targetsInstancesAsJson : ${targetsInstancesAsJson}"
+	
+	prodReleases.stream().map{r -> getSingleAQLExcludeReleaseStatement(r)}.collect(Collectors.toList()).join("")
+		
+//	targetsInstancesAsJson.targetInstances.each { target ->
+//		
+//	}
 }
 
 stage("Getting Releases") {
