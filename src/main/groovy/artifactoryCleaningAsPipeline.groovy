@@ -12,7 +12,7 @@ def repoPwd
 def targetSystemMappingFilePath = env.targetSystemMappingFilePath ?: "/etc/opt/apg-patch-common/TargetSystemMappings.json"
 def revisionsFilePath = env.revisionsFilePath ?: "/var/opt/apg-patch-cli/Revisions.json"
 
-def targetInstances = []
+def targetsName = []
 def targetToReleases = [:]
 
 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactoryDev',
@@ -54,9 +54,9 @@ private def loadTargetInstances() {
 	//targetInstances = targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
 	println "targetsInstancesAsJson : ${targetsInstancesAsJson}"
 	targetsInstancesAsJson.targetInstances.each { target ->
-		loadTargetInstances.add(target.name)
+		targetsName.add(target.name)
 	}
-	println "Following targetInstances have been loaded: ${loadTargetInstances}"
+	println "Following targetInstances have been loaded: ${targetsName}"
 }
 
 /*
