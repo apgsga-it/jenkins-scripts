@@ -7,7 +7,7 @@ def userpwd = env["artifactoryPassword"]
 println "trying to run a sh command ..."
 
 
-def query = "items.find({\"repo\":\"releases-test\", \"created\":{\"\$lt\":\"2099-01-01\"}, \"type\":\"file\", \"name\":{\"\$match\":\"*.zip\"}"
+def query = "items.find({\"repo\":\"releases-test\", \"created\":{\"\$lt\":\"2099-01-01\"}, \"type\":\"file\", \"name\":{\"\$match\":\"*.zip\"}})"
 
 def artifactoryUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga"
 def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
