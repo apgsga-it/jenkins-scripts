@@ -27,7 +27,7 @@ def proc = curlCmd.execute()
 def sout = new StringBuilder()
 def serr = new StringBuilder()
 proc.consumeProcessOutput(sout,serr)
-proc.waitForOrKill(5000)
+proc.waitForOrKill(10000)
 println "out: ${sout}"
 println "=========================================================================="
 println "err: ${serr}"
