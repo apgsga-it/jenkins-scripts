@@ -29,18 +29,17 @@ stage("Pre-requisite") {
 		def result = sh script:apsrevcliCmd, returnStatus:true
 		assert result == 0 : "Problem while trying to call apsrevcli with following command: ${apsrevcliCmd}"
 	}
-	
 }
 
-stage("Getting targetInstances") {
-	getTargetInstances()
+stage("Loading targetInstances") {
+	loadTargetInstances()
 }
 
-stage("Getting Revisions") {
+stage("Loading Revisions") {
 //	def 
 }
 
-stage("Getting Production Releases") {
+stage("Loading Production Releases") {
 	
 }
 
@@ -49,15 +48,15 @@ stage("Getting Production Releases") {
 
 
 
-private def getTargetInstances() {
+private def loadTargetInstances() {
 	def targetsInstancesAsJson = new JsonSlurper().parse(new File(targetSystemMappingFilePath))
 	// JHE: could be as simple as that, but : https://issues.jenkins-ci.org/browse/JENKINS-56330
 	//targetInstances = targetsInstancesAsJson.targetInstances.stream().map{t -> t.name}.collect()(Collectors.toList())
 	println "targetsInstancesAsJson : ${targetsInstancesAsJson}"
 	targetsInstancesAsJson.targetInstances.each { target ->
-		targetInstances.add(target.name)
+		loadTargetInstances.add(target.name)
 	}
-	println "Following targetInstances have been loaded: ${targetInstances}"
+	println "Following targetInstances have been loaded: ${loadTargetInstances}"
 }
 
 /*
