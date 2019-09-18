@@ -21,14 +21,21 @@ withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifa
 		repoPwd = "${PASSWORD}"
 }
 
+stages {
 
-stage("one") {
-	def a = "salut"
-	println a
-}
+	def a
+	
+	stage("one") {
+		a = "salut"
+		println "from one ${a}"
+	}
+	
+	stage("two") {
+		println "from two ${a}"
+		a = "ca va?"
+		println "from two again ${a}"
+	}
 
-stage("two") {
-	println a
 }
 
 
