@@ -1,4 +1,4 @@
 
 
-println artifactoryUser
+println env.artifactoryUser
 println "done"
