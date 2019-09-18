@@ -1,4 +1,4 @@
 
 
-println this.getBinding().getVariables()
-println "done"
+def env = System.getenv()
+println env["artifactoryUser"]
