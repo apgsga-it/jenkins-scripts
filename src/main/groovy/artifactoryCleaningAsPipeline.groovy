@@ -21,28 +21,39 @@ withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifa
 		repoPwd = "${PASSWORD}"
 }
 
-stage("Pre-requisite") {
-	node() {
-			checkPre()
+
+stage("one") {
+	def a = "salut"
+	println a
+}
+
+stage("two") {
+	println a
+}
+
+
+//stage("Pre-requisite") {
+//	node() {
+//			checkPre()
 //		assert new File(targetSystemMappingFilePath).exists() : "${targetSystemMappingFilePath} does not exist"
 //		assert new File(revisionsFilePath).exists() : "${revisionsFilePath} does not exist"
 //		def apsrevcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh"
 //		def result = sh script:apsrevcliCmd, returnStatus:true
 //		assert result == 0 : "Problem while trying to call apsrevcli with following command: ${apsrevcliCmd}"
-	}
-}
+//	}
+//}
 
-stage("Loading targetInstances") {
-	loadTargetInstances()
-}
+//stage("Loading targetInstances") {
+//	loadTargetInstances()
+//}
 
-stage("Loading Revisions") {
-//	def 
-}
+//stage("Loading Revisions") {
+////	def 
+//}
 
-stage("Loading Production Releases") {
-	
-}
+//stage("Loading Production Releases") {
+//	
+//}
 
 
 // iterate over all Repositories, fetch released Artifact, check not in prod, delete
