@@ -19,7 +19,7 @@ def res
 println "query : ${query}"
 println "searchRequestUrl : ${searchRequestUrl}"
 
-curlCmd = "curl -L -u ${username}:${userpwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${searchRequestUrl}"
+curlCmd = "curl -L -u ${username}:${userpwd} -X POST -H 'Content-Type: text/plain' -d '${query}' ${searchRequestUrl}"
 
 println "curlCmd : ${curlCmd}"
 
