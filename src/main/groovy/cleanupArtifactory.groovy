@@ -15,7 +15,13 @@ def searchRequestUrl = "${artifactoryUrl}/api/search/aql"
 def curlCmd
 def res
 
+
+println "query : ${query}"
+println "searchRequestUrl : ${searchRequestUrl}"
+
 curlCmd = "curl -L -u ${username}:${userpwd} -X POST -H \"Content-Type: text/plain\" -d '${query}' ${searchRequestUrl}"
+
+println "curlCmd : ${curlCmd}"
 
 def proc = curlCmd.execute()
 def sout = new StringBuilder()
