@@ -6,7 +6,7 @@ println env["artifactoryPassword"]
 
 println "trying to run a sh command ..."
 
-def proc = "ls".execute()
+def proc = "curl www.google.ch".execute()
 def sout = new StringBuilder()
 def serr = new StringBuilder()
 proc.consumeProcessOutput(sout,serr)
