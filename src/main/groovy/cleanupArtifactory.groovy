@@ -3,22 +3,53 @@
 import groovy.json.JsonSlurper
 
 
+def final repositories = ["dbpatch-test","releases-test","yumpatchrepo-test","yumrepodev-test","yumrepoprod-test","dummyRepoWhichDoesNotExist"]
+def dryRun = true
+ 
+def nonProdReleases = targetInstancesReleases() 
+
+println "nonProdReleases : ${nonProdReleases}"
+println "done"
+
+
+private def targetInstancesReleases() {
+	def releases = []
+	def targets = loadTargetInstances()
+	
+	targets.each { t -> 
+		def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr ${t.name}"
+		def targetReleases = executeSystemCmd(cmd,5000)
+		println "Following releases found for target ${t.name}: ${targetReleases}"
+		releases.addAll(targetReleases.split(","))
+	}	
+	
+	println "Releases which can potientially be deleted: ${releases}"
+	releases
+}
+
+private def loadTargetInstances() {
+	def targetSystemMappingFilePath = "/etc/opt/apg-patch-common/TargetSystemMappings.json"
+	def targetSystemMapping = new File(targetSystemMappingFilePath)
+	assert targetSystemMapping.exists() : "${targetSystemMappingFilePath} does not exist"
+	return new JsonSlurper().parse(targetSystemMapping).targetInstances
+}
+
 
 //artifactToBeDeleted()
 
 
-def revcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr dev-ondemand"
-def proc = revcliCmd.execute()
-def sout = new StringBuilder()
-def serr = new StringBuilder()
-proc.consumeProcessOutput(sout,serr)
-proc.waitForOrKill(10000)
-println "out: ${sout}"
-println "=========================================================================="
-println "err: ${serr}"
-println "Done"
+//executeSystemCmd()
 
 
+private def executeSystemCmd(def cmd, def waitTimeInMs) {
+	def proc = cmd.execute()
+	def sout = new StringBuilder()
+	def serr = new StringBuilder()
+	proc.consumeProcessOutput(sout,serr)
+	proc.waitForOrKill(waitTimeInMs)
+	assert serr?.trim() : "Error occured while running following command: ${cmd}  /  ${serr}"  
+	return sout
+}
 
 private artifactToBeDeleted() {
 
