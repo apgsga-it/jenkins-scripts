@@ -20,7 +20,7 @@ private def formatReleasesForAqlSearch() {
 	def nonProdReleases = targetInstancesReleases()
 	def aql = ""
 	nonProdReleases.each { release ->
-		def firstPart = '{"name":{$match":"*'
+		def firstPart = '{"name":{"$match":"*'
 		def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
 		def lastPart = '*"}},'
 		aql += "${firstPart}${extractedRelease}${lastPart}"
