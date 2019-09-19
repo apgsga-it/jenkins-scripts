@@ -30,13 +30,48 @@ private def formatReleasesForAqlSearch() {
 
 private def deleteArtifacts(def repo) {
 	def artifactsToBeDeleted = artifactsToBeDeletedFor(repo)
+	def resultPath
 	println "Artifacts to be deleted for repo ${repo.name}"
 	println "=============================================="
 	artifactsToBeDeleted.results.each { result ->
 		println "${result.path}/${result.name} (created: ${result.created})"
+		if (result.path.toString().equals(".")) {
+			resultPath = result.repo + "/" + result.name
+		}
+		else {
+			resultPath = result.repo + "/" + result.path + "/" + result.name
+		}
+		doDeleteArtifact(resultPath)
 	}
 	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
+}
+
+private def doDeleteArtifact(def artifactPath) {
+	if(!dryRun) {
+		/*
+		def env = System.getenv()
+		def username = env["artifactoryUser"]
+		def userpwd = env["artifactoryPassword"]
+		def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${artifactPath}").openConnection() as HttpURLConnection
+		http.setRequestMethod('DELETE')
+		http.setDoOutput(true)
+		http.setFollowRedirects(true)
+		http.setInstanceFollowRedirects(true)
+		
+		String userpass = "${username}:${userpwd}";
+		String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
+		http.setRequestProperty ("Authorization", basicAuth);
+		
+		http.connect()
+		*/
+		
+		println "${artifactPath} deleted"
+	}
+	else {
+		println "${artifactPath} would have been deleted"
+	}
+	
 }
 
 private def targetInstancesReleases() {
@@ -79,13 +114,8 @@ private artifactsToBeDeletedFor(def repo) {
 	def env = System.getenv()
 	def username = env["artifactoryUser"]
 	def userpwd = env["artifactoryPassword"]
-
-	
-	println "releasesFormatedForAqlSearch ${releasesFormatedForAqlSearch}"
 	
 	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
-	
-	println "Request body : ${body}"
 	
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
 	http.setRequestMethod('POST')
