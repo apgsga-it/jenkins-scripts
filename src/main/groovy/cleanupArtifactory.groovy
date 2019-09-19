@@ -1,6 +1,5 @@
 #!/usr/bin/env groovy
 
-import net.sf.json.groovy.JsonSlurper
 
 
 def env = System.getenv()
