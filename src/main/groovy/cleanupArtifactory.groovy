@@ -69,6 +69,9 @@ private artifactsToBeDeletedFor(def repo) {
 
 	
 	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "name":{"$match":"*"}'
+	
+	println "Request body : ${body}"
+	
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
 	http.setRequestMethod('POST')
 	http.setDoOutput(true)
