@@ -23,7 +23,7 @@ private def targetInstancesReleases() {
 		def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr ${t.name}"
 		def targetReleases = executeSystemCmd(cmd,5000)
 		println "Following releases found for target ${t.name}: ${targetReleases}"
-		releases.addAll(targetReleases.toString().split(","))
+		releases.addAll(targetReleases.toString().trim().split(","))
 	}	
 	
 	Predicate<String> removeCondition = {s -> s.length()==0 || s == null}
