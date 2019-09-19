@@ -20,7 +20,7 @@ private def targetInstancesReleases() {
 		def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr ${t.name}"
 		def targetReleases = executeSystemCmd(cmd,5000)
 		println "Following releases found for target ${t.name}: ${targetReleases}"
-		releases.addAll(targetReleases.split(","))
+		releases.addAll(targetReleases.toString().split(","))
 	}	
 	
 	println "Releases which can potientially be deleted: ${releases}"
@@ -47,7 +47,7 @@ private def executeSystemCmd(def cmd, def waitTimeInMs) {
 	def serr = new StringBuilder()
 	proc.consumeProcessOutput(sout,serr)
 	proc.waitForOrKill(waitTimeInMs)
-	assert serr.size()==0 : "Error occured while running following command: ${cmd}  /  ${serr}"  
+	assert serr.toString()?.trim() : "Error occured while running following command: ${cmd}  /  ${serr}"  
 	return sout
 }
 
