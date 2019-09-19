@@ -26,7 +26,7 @@ private def targetInstancesReleases() {
 		releases.addAll(targetReleases.toString().split(","))
 	}	
 	
-	Predicate<String> removeCondition = {s -> s.length==0 || s == null}
+	Predicate<String> removeCondition = {s -> s.length()==0 || s == null}
 	releases.removeIf(removeCondition)
 	println "Releases which can potientially be deleted: ${releases}"
 	releases
