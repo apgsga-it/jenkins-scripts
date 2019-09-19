@@ -8,7 +8,8 @@ def dryRun = true
  
 def nonProdReleases = targetInstancesReleases() 
 
-println "nonProdReleases : ${nonProdReleases}"
+println "nonProdReleases :"
+nonProdReleases.each { npr -> println(npr) }
 println "done"
 
 
