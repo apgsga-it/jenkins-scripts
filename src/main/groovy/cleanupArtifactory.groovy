@@ -112,14 +112,9 @@ private artifactsToBeDeletedFor(def repo) {
 		http.connect()
 	}
 	
+	assert http.responseCode == 200 : "Error while fetching list of Artifacts on Artifactory. Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
 	
-	if (http.responseCode == 200) {
-		return new JsonSlurper().parse(http.inputStream)
-	} else {
-		println "KO ${http.responseCode}"
-		println http.getResponseMessage()
-		return "ERRRRRRRROOOOOOOOOORRRRRRRRRRRR"
-	}
+	return new JsonSlurper().parse(http.inputStream)
 }
 
 
