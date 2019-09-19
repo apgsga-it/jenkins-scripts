@@ -68,7 +68,7 @@ private artifactsToBeDeletedFor(def repo) {
 	def userpwd = env["artifactoryPassword"]
 
 	
-	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "name":{"$match":"*"}'
+	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "name":{"$match":"*"})'
 	
 	println "Request body : ${body}"
 	
