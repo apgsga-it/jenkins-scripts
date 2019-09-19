@@ -86,6 +86,7 @@ private def doDeleteArtifact(def artifactPath) {
 			String newUrl = http.getHeaderField("Location");
 			// open the new connnection again
 			http = new URL(newUrl).openConnection() as HttpURLConnection
+			http.setRequestMethod('DELETE')
 			String userpass2 = "${username}:${userpwd}";
 			String basicAuth2 = "Basic " + new String(Base64.getEncoder().encode(userpass2.getBytes()));
 			http.setRequestProperty ("Authorization", basicAuth2);
