@@ -1,10 +1,16 @@
 #!/usr/bin/env groovy
 
+import groovy.json.JsonSlurper
+
+
+
 
 
 def env = System.getenv()
 def username = env["artifactoryUser"]
 def userpwd = env["artifactoryPassword"]
+
+
 /*
 def proc = curlCmdAsArray.execute()
 def sout = new StringBuilder()
@@ -61,11 +67,14 @@ if (redirect) {
 	http.connect()
 }
 
-def response = [:]
-
 if (http.responseCode == 200) {
 	println "OK"
-	println http.inputStream.getText('UTF-8')
+//	def response = http.inputStream.getText('UTF-8')
+//	println response
+	def resultsAsJson = new JsonSlurper().parse(http.inputStream)
+	resultsAsJson.results.each { r ->
+		println "Artifact name: ${r.name}"
+	}
 } else {
 	println "KO ${http.responseCode}"
 	println http.getResponseMessage()
