@@ -7,31 +7,25 @@ import groovy.transform.Field
 
 def final env = System.getenv()
 def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
-def dryRun = true
-@Field final nonProdReleases = targetInstancesReleases()
-@Field final releasesFormatedForAqlSearch = formatReleasesForAqlSearch(nonProdReleases)
+@Field dryRun = true
+@Field releasesFormatedForAqlSearch = formatReleasesForAqlSearch()
 
-
-nonProdReleases = "sslkjlkj"
-
-test()
-
-
-private def test() {
-	println "FROM TEST : ${releasesFormatedForAqlSearch}"
-}
-
-/*
 repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
 	deleteArtifacts(repo)
 	println "Repo ${repo.name} successfully cleaned"	
 }
-*/
 
-
-private def formatReleasesForAqlSearch(def releases) {
-	return "ThisStringHasToBeDone:):)"
+private def formatReleasesForAqlSearch() {
+	def nonProdReleases = targetInstancesReleases()
+	def aql = ""
+	nonProdReleases.each { release ->
+		def firstPart = '{"name":{$match":"*'
+		def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
+		def lastPart = '*"}},'
+		aql += "${firstPart}${extractedRelease}${lastPart}"
+	}
+	return aql.substring(0, aql.lastIndexOf(","))
 }
 
 private def deleteArtifacts(def repo) {
@@ -87,7 +81,9 @@ private artifactsToBeDeletedFor(def repo) {
 	def userpwd = env["artifactoryPassword"]
 
 	
-	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "name":{"$match":"*"}})'
+	println "releasesFormatedForAqlSearch ${releasesFormatedForAqlSearch}"
+	
+	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
 	
 	println "Request body : ${body}"
 	
