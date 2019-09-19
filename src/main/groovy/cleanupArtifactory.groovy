@@ -7,10 +7,23 @@ import groovy.json.JsonSlurper
 def final env = System.getenv()
 def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
 def dryRun = true
-def nonProdReleases = targetInstancesReleases()
+def final nonProdReleases = targetInstancesReleases()
 
 repositoriesAsJson.repositories.each { repo ->
-	println "Cleaning repo ${repo} started..."
+	println "Cleaning repo ${repo.name} started..."
+	deleteArtifacts(repo)
+	println "Repo ${repo.name} successfully cleaned"	
+}
+
+private def deleteArtifacts(def repo) {
+	def artifactsToBeDeleted = artifactsToBeDeletedFor(repo)
+	println "Artifacts to be deleted for repo ${repo.name}"
+	println "=============================================="
+	artifactsToBeDeleted.results.each { result ->
+		println "${result.patch}/${result.name} (created: ${result.created})"
+	}
+	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
+	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 }
 
 private def targetInstancesReleases() {
@@ -38,12 +51,6 @@ private def loadTargetInstances() {
 }
 
 
-//artifactToBeDeleted()
-
-
-//executeSystemCmd()
-
-
 private def executeSystemCmd(def cmd, def waitTimeInMs) {
 	def proc = cmd.execute()
 	def sout = new StringBuilder()
@@ -54,14 +61,14 @@ private def executeSystemCmd(def cmd, def waitTimeInMs) {
 	return sout
 }
 
-private artifactToBeDeleted() {
+private artifactsToBeDeletedFor(def repo) {
 
 	def env = System.getenv()
 	def username = env["artifactoryUser"]
 	def userpwd = env["artifactoryPassword"]
 
 	
-	def body = 'items.find({"type":"file","$and": [{"name":{"$match":"*9.1.0.ADMIN-UIMIG-198*"}},{"name":{"$nmatch":"*zip*"}}]})'
+	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "name":{"$match":"*"}'
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
 	http.setRequestMethod('POST')
 	http.setDoOutput(true)
@@ -105,17 +112,13 @@ private artifactToBeDeleted() {
 		http.connect()
 	}
 	
+	
 	if (http.responseCode == 200) {
-		println "OK"
-	//	def response = http.inputStream.getText('UTF-8')
-	//	println response
-		def resultsAsJson = new JsonSlurper().parse(http.inputStream)
-		resultsAsJson.results.each { r ->
-			println "Artifact name: ${r.name}"
-		}
+		return new JsonSlurper().parse(http.inputStream)
 	} else {
 		println "KO ${http.responseCode}"
 		println http.getResponseMessage()
+		return "ERRRRRRRROOOOOOOOOORRRRRRRRRRRR"
 	}
 }
 
