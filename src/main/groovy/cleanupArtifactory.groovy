@@ -1,19 +1,17 @@
 #!/usr/bin/env groovy
 
 import java.util.function.Predicate
-
 import groovy.json.JsonSlurper
 
 
-def final repositories = ["dbpatch-test","releases-test","yumpatchrepo-test","yumrepodev-test","yumrepoprod-test","dummyRepoWhichDoesNotExist"]
+def final env = System.getenv()
+def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
 def dryRun = true
- 
-def nonProdReleases = targetInstancesReleases() 
+def nonProdReleases = targetInstancesReleases()
 
-println "nonProdReleases :"
-nonProdReleases.each { npr -> println(npr) }
-println "done"
-
+repositoriesAsJson.repositories.each { repo ->
+	println "Cleaning repo ${repo} started..."
+}
 
 private def targetInstancesReleases() {
 	def releases = []
