@@ -4,20 +4,19 @@ import groovy.json.JsonSlurper
 
 
 
-artifactToBeDeleted()
+//artifactToBeDeleted()
 
 
-/*
- def proc = curlCmdAsArray.execute()
- def sout = new StringBuilder()
- def serr = new StringBuilder()
- proc.consumeProcessOutput(sout,serr)
- proc.waitForOrKill(10000)
- println "out: ${sout}"
- println "=========================================================================="
- println "err: ${serr}"
- println "Done"
- */
+def revcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh"
+def proc = revcliCmd.execute()
+def sout = new StringBuilder()
+def serr = new StringBuilder()
+proc.consumeProcessOutput(sout,serr)
+proc.waitForOrKill(10000)
+println "out: ${sout}"
+println "=========================================================================="
+println "err: ${serr}"
+println "Done"
 
 
 
