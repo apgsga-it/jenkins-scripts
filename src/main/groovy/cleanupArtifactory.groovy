@@ -7,7 +7,7 @@ import groovy.transform.Field
 
 def final env = System.getenv()
 def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
-@Field dryRun = true
+@Field dryRun = env["dryRun"] as Boolean
 @Field releasesFormatedForAqlSearch = formatReleasesForAqlSearch()
 
 repositoriesAsJson.repositories.each { repo ->
