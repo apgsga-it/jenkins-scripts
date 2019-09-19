@@ -67,6 +67,34 @@ private def doDeleteArtifact(def artifactPath) {
 		
 		http.connect()
 		
+		
+		boolean redirect = false;
+		
+		// normally, 3xx is redirect
+		int status = http.getResponseCode();
+		if (status != HttpURLConnection.HTTP_OK) {
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP
+				|| status == HttpURLConnection.HTTP_MOVED_PERM
+					|| status == HttpURLConnection.HTTP_SEE_OTHER
+						|| status == 308)
+			redirect = true;
+		}
+		
+		if (redirect) {
+			
+			// get redirect url from "location" header field
+			String newUrl = http.getHeaderField("Location");
+			// open the new connnection again
+			http = new URL(newUrl).openConnection() as HttpURLConnection
+			String userpass2 = "${username}:${userpwd}";
+			String basicAuth2 = "Basic " + new String(Base64.getEncoder().encode(userpass2.getBytes()));
+			http.setRequestProperty ("Authorization", basicAuth2);
+			http.setDoOutput(true)
+			http.connect()
+		}
+		
+		
+		
 		println "RESULT FROM DELETE: ${http.responseCode} / ${http.getResponseMessage()}"
 		
 		println "${artifactPath} deleted"
