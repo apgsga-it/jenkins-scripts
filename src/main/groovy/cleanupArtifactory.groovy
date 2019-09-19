@@ -67,6 +67,8 @@ private def doDeleteArtifact(def artifactPath) {
 		
 		http.connect()
 		
+		println "RESULT FROM DELETE: ${http.responseCode} / ${http.getResponseMessage()}"
+		
 		println "${artifactPath} deleted"
 	}
 	else {
