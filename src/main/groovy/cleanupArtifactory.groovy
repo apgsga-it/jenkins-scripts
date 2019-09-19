@@ -20,7 +20,7 @@ private def targetInstancesReleases() {
 		def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr ${t.name}"
 		def targetReleases = executeSystemCmd(cmd,5000)
 		println "Following releases found for target ${t.name}: ${targetReleases}"
-		releases.addAll(targetReleases.toString().split(",").findAll { item -> item.isEmpty() })
+		releases.addAll(targetReleases.toString().split(",").findAll { item -> !item.isEmpty() })
 	}	
 	
 	println "Releases which can potientially be deleted: ${releases}"
