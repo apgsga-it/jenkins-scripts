@@ -52,7 +52,6 @@ private def doDeleteArtifact(def artifactPath) {
 	println "dryRun: ${dryRun}"
 	
 	if(!dryRun) {
-		/*
 		def env = System.getenv()
 		def username = env["artifactoryUser"]
 		def userpwd = env["artifactoryPassword"]
@@ -67,7 +66,6 @@ private def doDeleteArtifact(def artifactPath) {
 		http.setRequestProperty ("Authorization", basicAuth);
 		
 		http.connect()
-		*/
 		
 		println "${artifactPath} deleted"
 	}
