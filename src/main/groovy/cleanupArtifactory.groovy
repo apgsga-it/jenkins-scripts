@@ -7,7 +7,7 @@ import groovy.json.JsonSlurper
 //artifactToBeDeleted()
 
 
-def revcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh"
+def revcliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr chei212"
 def proc = revcliCmd.execute()
 def sout = new StringBuilder()
 def serr = new StringBuilder()
