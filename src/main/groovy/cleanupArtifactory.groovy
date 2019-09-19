@@ -2,17 +2,34 @@
 
 import java.util.function.Predicate
 import groovy.json.JsonSlurper
+import groovy.transform.Field
 
 
 def final env = System.getenv()
 def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
 def dryRun = true
 def final nonProdReleases = targetInstancesReleases()
+@Field releasesFormatedForAqlSearch = formatReleasesForAqlSearch(nonProdReleases)
 
+
+test()
+
+
+private def test() {
+	println "FROM TEST : ${releasesFormatedForAqlSearch}"
+}
+
+/*
 repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
 	deleteArtifacts(repo)
 	println "Repo ${repo.name} successfully cleaned"	
+}
+*/
+
+
+private def formatReleasesForAqlSearch(def releases) {
+	return "ThisStringHasToBeDone:):)"
 }
 
 private def deleteArtifacts(def repo) {
@@ -20,7 +37,7 @@ private def deleteArtifacts(def repo) {
 	println "Artifacts to be deleted for repo ${repo.name}"
 	println "=============================================="
 	artifactsToBeDeleted.results.each { result ->
-		println "${result.patch}/${result.name} (created: ${result.created})"
+		println "${result.path}/${result.name} (created: ${result.created})"
 	}
 	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
