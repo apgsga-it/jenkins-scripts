@@ -47,7 +47,7 @@ private def executeSystemCmd(def cmd, def waitTimeInMs) {
 	def serr = new StringBuilder()
 	proc.consumeProcessOutput(sout,serr)
 	proc.waitForOrKill(waitTimeInMs)
-	assert serr.toString()?.trim() : "Error occured while running following command: ${cmd}  /  ${serr}"  
+	assert (serr==null || serr.size()==0) : "Error occured while running following command: ${cmd}  /  ${serr}"  
 	return sout
 }
 
