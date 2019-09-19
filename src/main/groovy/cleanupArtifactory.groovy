@@ -8,9 +8,11 @@ import groovy.transform.Field
 def final env = System.getenv()
 def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
 def dryRun = true
-@Field nonProdReleases = targetInstancesReleases()
-@Field releasesFormatedForAqlSearch = formatReleasesForAqlSearch(nonProdReleases)
+@Field final nonProdReleases = targetInstancesReleases()
+@Field final releasesFormatedForAqlSearch = formatReleasesForAqlSearch(nonProdReleases)
 
+
+nonProdReleases = "sslkjlkj"
 
 test()
 
