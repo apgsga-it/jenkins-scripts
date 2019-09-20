@@ -31,10 +31,7 @@ private def formatReleasesForAqlSearch() {
 private def deleteArtifacts(def repo) {
 	def artifactsToBeDeleted = artifactsToBeDeletedFor(repo)
 	def resultPath
-	println "Artifacts to be deleted for repo ${repo.name}"
-	println "=============================================="
 	artifactsToBeDeleted.results.each { result ->
-		println "${result.path}/${result.name} (created: ${result.created})"
 		if (result.path.toString().equals(".")) {
 			resultPath = result.repo + "/" + result.name
 		}
@@ -43,8 +40,6 @@ private def deleteArtifacts(def repo) {
 		}
 		doDeleteArtifact(resultPath)
 	}
-	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
-	println "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 }
 
 private def doDeleteArtifact(def artifactPath) {
@@ -95,9 +90,7 @@ private def doDeleteArtifact(def artifactPath) {
 		}
 		
 		
-		
-		println "RESULT FROM DELETE: ${http.responseCode} / ${http.getResponseMessage()}"
-		
+		assert http.responseCode == 204 : "Deletion from ${artifactPath} failed. Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
 		println "${artifactPath} deleted"
 	}
 	else {
