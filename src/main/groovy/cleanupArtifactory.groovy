@@ -180,7 +180,7 @@ private artifactsToBeDeletedFor(def repo) {
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	println "keepMaxDays for ${repo.name}: ${repo.keepMaxDays}"
-	def keepMinDate = new Date().minus(repo.keepMaxDays)
+	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
 	println "keepMinDate: ${keepMinDate.format("yyyy-MM-dd")}"
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
