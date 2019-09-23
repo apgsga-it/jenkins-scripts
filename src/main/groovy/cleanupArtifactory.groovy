@@ -72,7 +72,7 @@ private def doDeleteRevision(def artifactoryPath) {
 
 private def doDeleteArtifact(def artifactPath) {
 	if(!dryRun) {
-		def response = executeArtifactoryHttpRequest(artifactPath, "DELETE", [:], false)
+		executeArtifactoryHttpRequest(artifactPath, "DELETE", [:], false)
 		println "${artifactPath} deleted"
 		/*
 		def env = System.getenv()
@@ -221,16 +221,19 @@ private artifactsToBeDeletedFor(def repo) {
 	*/
 }
 
-private executeArtifactoryHttpRequest(def contextPath, def method, def reqProperties, def needOutputResult) {
+private def executeArtifactoryHttpRequest(def contextPath, def method, def reqProperties, def needOutputResult) {
 	executeArtifactoryHttpRequest(contextPath, method, reqProperties, null, needOutputResult)
 }
 
-private executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body, def needOutputResult) {
+private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body, def needOutputResult) {
 	def env = System.getenv()
 	def username = env["artifactoryUser"]
 	def userpwd = env["artifactoryPassword"]
 	
-	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}").openConnection() as HttpURLConnection
+	def completeUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}"
+	println "completeUrl : ${completeUrl}"
+	
+	def http = new URL(completeUrl).openConnection() as HttpURLConnection
 	http.setRequestMethod(method)
 	http.setDoOutput(true)
 	reqProperties.keySet().each { propertyKey ->
