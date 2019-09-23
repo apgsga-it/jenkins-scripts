@@ -181,11 +181,12 @@ private artifactsToBeDeletedFor(def repo) {
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	println "keepMaxDays for ${repo.name}: ${repo.keepMaxDays}"
 	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
-	println "keepMinDate: ${keepMinDate.format("yyyy-MM-dd")}"
+	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
+	println "keepMinDate: ${keepMinDateFormatted}"
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	
-	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
+	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + ${keepMinDateFormatted} + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
 	
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
 	http.setRequestMethod('POST')
