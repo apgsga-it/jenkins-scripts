@@ -67,7 +67,13 @@ private def deleteArtifacts(def repo) {
 private def doDeleteRevision(def artifactoryPath) {
 	revNumberToCompleteRevision.keySet().each { searchedRevision ->
 		if(artifactoryPath.contains(searchedRevision)) {
-			println "apsrevli would be call to delete following revision: " + revNumberToCompleteRevision.get(searchedRevision)
+			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
+			if(!dryRun) {
+				executeSystemCmd(cmd, "10000")
+			}
+			else {
+				println "Running dry ... Following would otherwise have been called: ${cmd}"
+			}
 		}		
 	}
 }
@@ -135,7 +141,7 @@ private def targetInstancesReleases() {
 	
 	targets.each { t -> 
 		def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr ${t.name}"
-		def targetReleases = executeSystemCmd(cmd,5000)
+		def targetReleases = executeSystemCmd(cmd,10000)
 		println "Following releases found for target ${t.name}: ${targetReleases}"
 		releases.addAll(targetReleases.toString().trim().split(","))
 	}	
