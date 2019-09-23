@@ -225,8 +225,6 @@ private executeArtifactoryHttpRequest(def contextPath, def method, def Map reqPr
 	def env = System.getenv()
 	def username = env["artifactoryUser"]
 	def userpwd = env["artifactoryPassword"]
-	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
-	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
 	
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}").openConnection() as HttpURLConnection
 	http.setRequestMethod(method)
