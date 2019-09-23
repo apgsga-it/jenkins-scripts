@@ -139,11 +139,11 @@ private def isHttpResponseRedirect(def status) {
 				status == HttpURLConnection.HTTP_MOVED_TEMP ||
 				status == HttpURLConnection.HTTP_MOVED_PERM ||
 				status == HttpURLConnection.HTTP_SEE_OTHER  ||
-				status == 308
+				status == 308 // 308 doesn't seem to be part of HttpUrlConnection :(
 			)
 }
 
-private doExecuteHttpAndReturn(def url, def method, def reqProperties, def body) {
+private def doExecuteHttpAndReturn(def url, def method, def reqProperties, def body) {
 	def http = new URL(url).openConnection() as HttpURLConnection
 	http.setRequestMethod(method)
 	http.setDoOutput(true)
@@ -161,41 +161,13 @@ private doExecuteHttpAndReturn(def url, def method, def reqProperties, def body)
 }
 
 private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body) {
-
 	def completeUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}"
-//	def http = new URL(completeUrl).openConnection() as HttpURLConnection
-//	http.setRequestMethod(method)
-//	http.setDoOutput(true)
-//	http.setFollowRedirects(true)
-//	http.setInstanceFollowRedirects(true)
-//	reqProperties.keySet().each { propertyKey ->
-//		http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
-//	}
-//	http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
-//	if(body != null) {
-//		http.outputStream.write(body.getBytes("UTF-8"))
-//	}
-//	http.connect()
-  
 	def http = doExecuteHttpAndReturn(completeUrl, method, reqProperties, body)
-	
 	while(isHttpResponseRedirect(http.getResponseCode())) {
 		// get redirect url from "location" header field
 		String newUrl = http.getHeaderField("Location");
 		http = doExecuteHttpAndReturn(newUrl, method, reqProperties, body)
-//		http = new URL(newUrl).openConnection() as HttpURLConnection
-//		http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
-//		http.setDoOutput(true)
-//		http.setRequestMethod(method)
-//		reqProperties.keySet().each { propertyKey ->
-//			http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
-//		}
-//		if(body != null) {
-//			http.outputStream.write(body.getBytes("UTF-8"))
-//		}
-//		http.connect()
 	}
-	
 	assert http.responseCode >= 200 && http.responseCode < 300 : "Error while calling http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath} . Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
 	// HTTP 204 -> No Content
 	def output = http.responseCode != 204 ? new JsonSlurper().parse(http.inputStream) : ""
