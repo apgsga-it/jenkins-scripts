@@ -69,7 +69,7 @@ private def doDeleteRevision(def artifactoryPath) {
 		if(artifactoryPath.contains(searchedRevision)) {
 			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
 			if(!dryRun) {
-				executeSystemCmd(cmd, "10000")
+				executeSystemCmd(cmd, 10000)
 			}
 			else {
 				println "Running dry ... Following would otherwise have been called: ${cmd}"
