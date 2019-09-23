@@ -8,7 +8,12 @@ import groovy.transform.Field
 def final env = System.getenv()
 def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
 @Field dryRun = System.getenv()["dryRun"].equals("true") ? true : false
-@Field releasesFormatedForAqlSearch = formatReleasesForAqlSearch()
+@Field releasesFormatedForAqlSearch
+@Field revNumberToCompleteRevision = [:]
+
+
+println releasesFormatedForAqlSearch
+println revNumberToCompleteRevision
 
 repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
@@ -24,8 +29,10 @@ private def formatReleasesForAqlSearch() {
 		def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
 		def lastPart = '*"}},'
 		aql += "${firstPart}${extractedRelease}${lastPart}"
+		revNumberToCompleteRevision.put(release.substring(release.lastIndexOf("-"),release.length()) + ".", release)
 	}
-	return aql.substring(0, aql.lastIndexOf(","))
+	
+	releasesFormatedForAqlSearch = aql.substring(0, aql.lastIndexOf(","))
 }
 
 private def deleteArtifacts(def repo) {
