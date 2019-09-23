@@ -74,58 +74,10 @@ private def doDeleteArtifact(def artifactPath) {
 	if(!dryRun) {
 		executeArtifactoryHttpRequest(artifactPath, "DELETE", [:])
 		println "${artifactPath} deleted"
-		/*
-		def env = System.getenv()
-		def username = env["artifactoryUser"]
-		def userpwd = env["artifactoryPassword"]
-		def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${artifactPath}").openConnection() as HttpURLConnection
-		http.setRequestMethod('DELETE')
-		http.setDoOutput(true)
-		http.setFollowRedirects(true)
-		http.setInstanceFollowRedirects(true)
-		
-		String userpass = "${username}:${userpwd}";
-		String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
-		http.setRequestProperty ("Authorization", basicAuth);
-		
-		http.connect()
-		
-		
-		boolean redirect = false;
-		
-		// normally, 3xx is redirect
-		int status = http.getResponseCode();
-		if (status != HttpURLConnection.HTTP_OK) {
-			if (status == HttpURLConnection.HTTP_MOVED_TEMP
-				|| status == HttpURLConnection.HTTP_MOVED_PERM
-					|| status == HttpURLConnection.HTTP_SEE_OTHER
-						|| status == 308)
-			redirect = true;
-		}
-		
-		if (redirect) {
-			
-			// get redirect url from "location" header field
-			String newUrl = http.getHeaderField("Location");
-			// open the new connnection again
-			http = new URL(newUrl).openConnection() as HttpURLConnection
-			http.setRequestMethod('DELETE')
-			String userpass2 = "${username}:${userpwd}";
-			String basicAuth2 = "Basic " + new String(Base64.getEncoder().encode(userpass2.getBytes()));
-			http.setRequestProperty ("Authorization", basicAuth2);
-			http.setDoOutput(true)
-			http.connect()
-		}
-		
-		
-		assert http.responseCode == 204 : "Deletion from ${artifactPath} failed. Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
-		println "${artifactPath} deleted"
-		*/
 	}
 	else {
 		println "${artifactPath} would have been deleted"
 	}
-	
 }
 
 private def targetInstancesReleases() {
@@ -168,109 +120,51 @@ private artifactsToBeDeletedFor(def repo) {
 	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
 	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
 	return executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body)
-	/*
-	def env = System.getenv()
-	def username = env["artifactoryUser"]
-	def userpwd = env["artifactoryPassword"]
-	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
-	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
-	
-	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
-	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
-	http.setRequestMethod('POST')
-	http.setDoOutput(true)
-	http.setRequestProperty("Content-Type", "text/plain")
-	http.setFollowRedirects(true)
-	http.setInstanceFollowRedirects(true)
-	
-	String userpass = "${username}:${userpwd}";
-	String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
-	http.setRequestProperty ("Authorization", basicAuth);
-	
-	http.outputStream.write(body.getBytes("UTF-8"))
-	http.connect()
-	
-	boolean redirect = false;
-	
-	// normally, 3xx is redirect
-	int status = http.getResponseCode();
-	if (status != HttpURLConnection.HTTP_OK) {
-		if (status == HttpURLConnection.HTTP_MOVED_TEMP
-			|| status == HttpURLConnection.HTTP_MOVED_PERM
-				|| status == HttpURLConnection.HTTP_SEE_OTHER
-					|| status == 308)
-		redirect = true;
-	}
-	
-	if (redirect) {
-		// get redirect url from "location" header field
-		String newUrl = http.getHeaderField("Location");
-		// open the new connnection again
-		http = new URL(newUrl).openConnection() as HttpURLConnection
-		String userpass2 = "${username}:${userpwd}";
-		String basicAuth2 = "Basic " + new String(Base64.getEncoder().encode(userpass2.getBytes()));
-		http.setRequestProperty ("Authorization", basicAuth2);
-		http.setDoOutput(true)
-		http.setRequestProperty("Content-Type", "text/plain")
-		http.outputStream.write(body.getBytes("UTF-8"))
-		http.connect()
-	}
-
-	assert http.responseCode == 200 : "Error while fetching list of Artifacts on Artifactory. Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
-	return new JsonSlurper().parse(http.inputStream)
-	*/
 }
 
 private def executeArtifactoryHttpRequest(def contextPath, def method, def reqProperties) {
 	executeArtifactoryHttpRequest(contextPath, method, reqProperties, null)
 }
 
+private httpArtifactoryBasicAuth() {
+	def username = System.getenv()["artifactoryUser"]
+	def userpwd = System.getenv()["artifactoryPassword"]
+	String userpass = "${username}:${userpwd}";
+	return "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
+}
+
+private def isHttpResponseRedirect(def status) {
+	return status != HttpURLConnection.HTTP_OK &&
+			(
+				status == HttpURLConnection.HTTP_MOVED_TEMP ||
+				status == HttpURLConnection.HTTP_MOVED_PERM ||
+				status == HttpURLConnection.HTTP_SEE_OTHER  ||
+				status == 308
+			)
+}
+
 private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body) {
-	def env = System.getenv()
-	def username = env["artifactoryUser"]
-	def userpwd = env["artifactoryPassword"]
-	
+
 	def completeUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}"
-	println "completeUrl : ${completeUrl}"
-	
 	def http = new URL(completeUrl).openConnection() as HttpURLConnection
 	http.setRequestMethod(method)
 	http.setDoOutput(true)
+	http.setFollowRedirects(true)
+	http.setInstanceFollowRedirects(true)
 	reqProperties.keySet().each { propertyKey ->
 		http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
 	}
-	http.setFollowRedirects(true)
-	http.setInstanceFollowRedirects(true)
-	
-	String userpass = "${username}:${userpwd}";
-	String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
-	http.setRequestProperty ("Authorization", basicAuth);
-	
+	http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
 	if(body != null) {
 		http.outputStream.write(body.getBytes("UTF-8"))
 	}
 	http.connect()
-	
-	boolean redirect = false;
-	
-	// normally, 3xx is redirect
-	int status = http.getResponseCode();
-	if (status != HttpURLConnection.HTTP_OK) {
-		if (status == HttpURLConnection.HTTP_MOVED_TEMP
-			|| status == HttpURLConnection.HTTP_MOVED_PERM
-				|| status == HttpURLConnection.HTTP_SEE_OTHER
-					|| status == 308)
-		redirect = true;
-	}
-	
-	if (redirect) {
+  
+	while(isHttpResponseRedirect(http.getResponseCode())) {
 		// get redirect url from "location" header field
 		String newUrl = http.getHeaderField("Location");
-		// open the new connnection again
 		http = new URL(newUrl).openConnection() as HttpURLConnection
-		String userpass2 = "${username}:${userpwd}";
-		String basicAuth2 = "Basic " + new String(Base64.getEncoder().encode(userpass2.getBytes()));
-		http.setRequestProperty ("Authorization", basicAuth2);
+		http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
 		http.setDoOutput(true)
 		http.setRequestMethod(method)
 		reqProperties.keySet().each { propertyKey ->
@@ -281,17 +175,9 @@ private def executeArtifactoryHttpRequest(def contextPath, def method, def Map r
 		}
 		http.connect()
 	}
-
+	
 	assert http.responseCode >= 200 && http.responseCode < 300 : "Error while calling http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath} . Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
 	// HTTP 204 -> No Content
 	def output = http.responseCode != 204 ? new JsonSlurper().parse(http.inputStream) : ""
 	return output
 }
-
-
-
-
-
-
-
-
