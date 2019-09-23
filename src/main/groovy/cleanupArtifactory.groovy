@@ -72,7 +72,7 @@ private def doDeleteRevision(def artifactoryPath) {
 
 private def doDeleteArtifact(def artifactPath) {
 	if(!dryRun) {
-		executeArtifactoryHttpRequest(artifactPath, "DELETE", [:], false)
+		executeArtifactoryHttpRequest(artifactPath, "DELETE", [:])
 		println "${artifactPath} deleted"
 		/*
 		def env = System.getenv()
@@ -167,7 +167,7 @@ private artifactsToBeDeletedFor(def repo) {
 	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
 	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
 	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
-	return executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body, true)
+	return executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body)
 	/*
 	def env = System.getenv()
 	def username = env["artifactoryUser"]
@@ -221,11 +221,11 @@ private artifactsToBeDeletedFor(def repo) {
 	*/
 }
 
-private def executeArtifactoryHttpRequest(def contextPath, def method, def reqProperties, def needOutputResult) {
-	executeArtifactoryHttpRequest(contextPath, method, reqProperties, null, needOutputResult)
+private def executeArtifactoryHttpRequest(def contextPath, def method, def reqProperties) {
+	executeArtifactoryHttpRequest(contextPath, method, reqProperties, null)
 }
 
-private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body, def needOutputResult) {
+private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body) {
 	def env = System.getenv()
 	def username = env["artifactoryUser"]
 	def userpwd = env["artifactoryPassword"]
@@ -282,8 +282,9 @@ private def executeArtifactoryHttpRequest(def contextPath, def method, def Map r
 		http.connect()
 	}
 
-	assert http.responseCode == 200 : "Error while calling http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath} . Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
-	def output = needOutputResult ? new JsonSlurper().parse(http.inputStream) : ""
+	assert http.responseCode >= 200 && http.responseCode < 300 : "Error while calling http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath} . Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
+	// HTTP 204 -> No Content
+	def output = http.responseCode != 204 ? new JsonSlurper().parse(http.inputStream) : ""
 	return output
 }
 
