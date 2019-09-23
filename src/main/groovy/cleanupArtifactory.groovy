@@ -143,8 +143,8 @@ private def isHttpResponseRedirect(def status) {
 			)
 }
 
-private doExecuteHttpAndReturn(def url) {
-	def http = new URL(completeUrl).openConnection() as HttpURLConnection
+private doExecuteHttpAndReturn(def url, def method, def reqProperties, def body) {
+	def http = new URL(url).openConnection() as HttpURLConnection
 	http.setRequestMethod(method)
 	http.setDoOutput(true)
 	http.setFollowRedirects(true)
@@ -177,12 +177,12 @@ private def executeArtifactoryHttpRequest(def contextPath, def method, def Map r
 //	}
 //	http.connect()
   
-	def http = doExecuteHttpAndReturn(completeUrl)
+	def http = doExecuteHttpAndReturn(completeUrl, method, reqProperties, body)
 	
 	while(isHttpResponseRedirect(http.getResponseCode())) {
 		// get redirect url from "location" header field
 		String newUrl = http.getHeaderField("Location");
-		http = doExecuteHttpAndReturn(newUrl)
+		http = doExecuteHttpAndReturn(newUrl, method, reqProperties, body)
 //		http = new URL(newUrl).openConnection() as HttpURLConnection
 //		http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
 //		http.setDoOutput(true)
