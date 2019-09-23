@@ -30,6 +30,12 @@ private def formatReleasesForAqlSearch() {
 
 private def deleteArtifacts(def repo) {
 	def artifactsToBeDeleted = artifactsToBeDeletedFor(repo)
+	
+	println "artifactsToBeDeleted"
+	println "===================="
+	println artifactsToBeDeleted
+	println "===================="
+	
 	def resultPath
 	artifactsToBeDeleted.results.each { result ->
 		if (result.path.toString().equals(".")) {
