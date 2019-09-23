@@ -72,6 +72,10 @@ private def doDeleteRevision(def artifactoryPath) {
 
 private def doDeleteArtifact(def artifactPath) {
 	if(!dryRun) {
+		def response = executeArtifactoryHttpRequest(artifactPath, "DELETE", [:])
+		println "${artifactPath} deleted"
+		println "response: ${response}"
+		/*
 		def env = System.getenv()
 		def username = env["artifactoryUser"]
 		def userpwd = env["artifactoryPassword"]
@@ -117,6 +121,7 @@ private def doDeleteArtifact(def artifactPath) {
 		
 		assert http.responseCode == 204 : "Deletion from ${artifactPath} failed. Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
 		println "${artifactPath} deleted"
+		*/
 	}
 	else {
 		println "${artifactPath} would have been deleted"
