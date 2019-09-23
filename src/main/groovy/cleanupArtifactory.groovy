@@ -52,7 +52,7 @@ private def deleteArtifacts(def repo) {
 		doDeleteArtifact(resultPath)
 		doDeleteRevision(resultPath)
 	}
-	println "Done deleting ${artifactsToBeDeleted.range.total} Artifacts and corresponding Revisions for repo ${repo} (dryRun was ${dryRun})"
+	println "Done deleting ${artifactsToBeDeleted.range.total} Artifacts and corresponding Revisions for repo ${repo.name} (dryRun was ${dryRun})"
 }
 
 private def doDeleteRevision(def artifactoryPath) {
