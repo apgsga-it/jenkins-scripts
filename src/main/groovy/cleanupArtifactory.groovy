@@ -186,7 +186,7 @@ private artifactsToBeDeletedFor(def repo) {
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	
-	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + ${keepMinDateFormatted} + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
+	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
 	
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
 	http.setRequestMethod('POST')
