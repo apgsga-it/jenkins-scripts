@@ -31,10 +31,16 @@ private def formatReleasesForAqlSearch() {
 		def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
 		def lastPart = '*"}},'
 		aql += "${firstPart}${extractedRelease}${lastPart}"
-		revNumberToCompleteRevision.put(release.substring(release.lastIndexOf("-")+1,release.length()), release)
+		storeRevisionMappingForSearch(release)
 	}
 	
 	releasesFormatedForAqlSearch = aql.substring(0, aql.lastIndexOf(","))
+}
+
+private def storeRevisionMappingForSearch(def release) {
+	def searchedRevision = release.substring(release.lastIndexOf("-"),release.length()) + "."
+	def revisionNumberOnly = release.substring(release.lastIndexOf("-")+1,release.length())
+	revNumberToCompleteRevision.put(searchedRevision,revisionNumberOnly)
 }
 
 private def deleteArtifacts(def repo) {
@@ -54,6 +60,15 @@ private def deleteArtifacts(def repo) {
 			resultPath = result.repo + "/" + result.path + "/" + result.name
 		}
 		doDeleteArtifact(resultPath)
+		doDeleteRevision(resultPath)
+	}
+}
+
+private def doDeleteRevision(def artifactoryPath) {
+	revNumberToCompleteRevision.keySet().each { searchedRevision ->
+		if(artifactoryPath.contains(searchedRevision)) {
+			println "apsrevli would be call to delete following revision: " + revNumberToCompleteRevision.get(searchedRevision)
+		}		
 	}
 }
 
