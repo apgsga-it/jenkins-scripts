@@ -176,6 +176,15 @@ private artifactsToBeDeletedFor(def repo) {
 	def username = env["artifactoryUser"]
 	def userpwd = env["artifactoryPassword"]
 	
+	
+	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
+	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
+	println "keepMaxDays for ${repo.name}: ${repo.keepMaxDays}"
+	def keepMinDate = new Date().minus(repo.keepMaxDays)
+	println "keepMinDate: ${keepMinDate.format("yyyy-MM-dd")}"
+	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
+	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
+	
 	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"2099-01-01"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
 	
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
