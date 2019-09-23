@@ -31,7 +31,7 @@ private def formatReleasesForAqlSearch() {
 		def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
 		def lastPart = '*"}},'
 		aql += "${firstPart}${extractedRelease}${lastPart}"
-		revNumberToCompleteRevision.put(release.substring(release.lastIndexOf("-"),release.length()) + ".", release)
+		revNumberToCompleteRevision.put(release.substring(release.lastIndexOf("-")+1,release.length()), release)
 	}
 	
 	releasesFormatedForAqlSearch = aql.substring(0, aql.lastIndexOf(","))
