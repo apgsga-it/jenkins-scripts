@@ -4,26 +4,20 @@ import java.util.function.Predicate
 import groovy.json.JsonSlurper
 import groovy.transform.Field
 
-
-def final env = System.getenv()
-def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedUp"])
-@Field dryRun = System.getenv()["dryRun"].equals("true") ? true : false
+def final repositoriesAsJson = new JsonSlurper().parseText(System.getenv()["repoToBeCleanedUp"])
+@Field dryRun
 @Field releasesFormatedForAqlSearch
 @Field revNumberToCompleteRevision = [:]
 
-// TODO: Rename this method
-formatReleasesForAqlSearch()
-
-println "releasesFormatedForAqlSearch: " + releasesFormatedForAqlSearch
-println "revNumberToCompleteRevision: " + revNumberToCompleteRevision
-
+initGlobalVariable()
+println "Running dry: ${dryRun}"
 repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
 	deleteArtifacts(repo)
 	println "Repo ${repo.name} successfully cleaned"	
 }
 
-private def formatReleasesForAqlSearch() {
+private def initGlobalVariable() {
 	def nonProdReleases = targetInstancesReleases()
 	def aql = ""
 	nonProdReleases.each { release ->
@@ -35,6 +29,7 @@ private def formatReleasesForAqlSearch() {
 	}
 	
 	releasesFormatedForAqlSearch = aql.substring(0, aql.lastIndexOf(","))
+	dryRun = System.getenv()["dryRun"].equals("true") ? true : false
 }
 
 private def storeRevisionMappingForSearch(def release) {
@@ -45,12 +40,7 @@ private def storeRevisionMappingForSearch(def release) {
 
 private def deleteArtifacts(def repo) {
 	def artifactsToBeDeleted = artifactsToBeDeletedFor(repo)
-	
-	println "artifactsToBeDeleted"
-	println "===================="
-	println artifactsToBeDeleted
-	println "===================="
-	
+	println "Following Artifact(s) will be deleted for repo ${repo}: ${artifactsToBeDeleted}" 
 	def resultPath
 	artifactsToBeDeleted.results.each { result ->
 		if (result.path.toString().equals(".")) {
@@ -62,6 +52,7 @@ private def deleteArtifacts(def repo) {
 		doDeleteArtifact(resultPath)
 		doDeleteRevision(resultPath)
 	}
+	println "Done deleting Artifacts and Revisions for repo ${repo} (dryRun was ${dryRun})"
 }
 
 private def doDeleteRevision(def artifactoryPath) {
@@ -69,6 +60,7 @@ private def doDeleteRevision(def artifactoryPath) {
 		if(artifactoryPath.contains(searchedRevision)) {
 			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
 			if(!dryRun) {
+				println "Following revision will be removed from Revisions.json: ${revNumberToCompleteRevision.get(searchedRevision)}"
 				executeSystemCmd(cmd, 10000)
 			}
 			else {
@@ -79,9 +71,6 @@ private def doDeleteRevision(def artifactoryPath) {
 }
 
 private def doDeleteArtifact(def artifactPath) {
-	
-	println "dryRun: ${dryRun}"
-	
 	if(!dryRun) {
 		def env = System.getenv()
 		def username = env["artifactoryUser"]
@@ -175,19 +164,10 @@ private artifactsToBeDeletedFor(def repo) {
 	def env = System.getenv()
 	def username = env["artifactoryUser"]
 	def userpwd = env["artifactoryPassword"]
-	
-	
-	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
-	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
-	println "keepMaxDays for ${repo.name}: ${repo.keepMaxDays}"
 	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
 	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
-	println "keepMinDate: ${keepMinDateFormatted}"
-	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
-	println "!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--"
 	
 	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
-	
 	def http = new URL("http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/api/search/aql").openConnection() as HttpURLConnection
 	http.setRequestMethod('POST')
 	http.setDoOutput(true)
@@ -195,14 +175,12 @@ private artifactsToBeDeletedFor(def repo) {
 	http.setFollowRedirects(true)
 	http.setInstanceFollowRedirects(true)
 	
-	
 	String userpass = "${username}:${userpwd}";
 	String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
 	http.setRequestProperty ("Authorization", basicAuth);
 	
 	http.outputStream.write(body.getBytes("UTF-8"))
 	http.connect()
-	
 	
 	boolean redirect = false;
 	
@@ -217,7 +195,6 @@ private artifactsToBeDeletedFor(def repo) {
 	}
 	
 	if (redirect) {
-		
 		// get redirect url from "location" header field
 		String newUrl = http.getHeaderField("Location");
 		// open the new connnection again
@@ -230,9 +207,8 @@ private artifactsToBeDeletedFor(def repo) {
 		http.outputStream.write(body.getBytes("UTF-8"))
 		http.connect()
 	}
-	
+
 	assert http.responseCode == 200 : "Error while fetching list of Artifacts on Artifactory. Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
-	
 	return new JsonSlurper().parse(http.inputStream)
 }
 
