@@ -143,9 +143,7 @@ private def isHttpResponseRedirect(def status) {
 			)
 }
 
-private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body) {
-
-	def completeUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}"
+private doExecuteHttpAndReturn(def url) {
 	def http = new URL(completeUrl).openConnection() as HttpURLConnection
 	http.setRequestMethod(method)
 	http.setDoOutput(true)
@@ -159,21 +157,43 @@ private def executeArtifactoryHttpRequest(def contextPath, def method, def Map r
 		http.outputStream.write(body.getBytes("UTF-8"))
 	}
 	http.connect()
+	return http
+}
+
+private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body) {
+
+	def completeUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}"
+//	def http = new URL(completeUrl).openConnection() as HttpURLConnection
+//	http.setRequestMethod(method)
+//	http.setDoOutput(true)
+//	http.setFollowRedirects(true)
+//	http.setInstanceFollowRedirects(true)
+//	reqProperties.keySet().each { propertyKey ->
+//		http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
+//	}
+//	http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
+//	if(body != null) {
+//		http.outputStream.write(body.getBytes("UTF-8"))
+//	}
+//	http.connect()
   
+	def http = doExecuteHttpAndReturn(completeUrl)
+	
 	while(isHttpResponseRedirect(http.getResponseCode())) {
 		// get redirect url from "location" header field
 		String newUrl = http.getHeaderField("Location");
-		http = new URL(newUrl).openConnection() as HttpURLConnection
-		http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
-		http.setDoOutput(true)
-		http.setRequestMethod(method)
-		reqProperties.keySet().each { propertyKey ->
-			http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
-		}
-		if(body != null) {
-			http.outputStream.write(body.getBytes("UTF-8"))
-		}
-		http.connect()
+		http = doExecuteHttpAndReturn(newUrl)
+//		http = new URL(newUrl).openConnection() as HttpURLConnection
+//		http.setRequestProperty ("Authorization", httpArtifactoryBasicAuth());
+//		http.setDoOutput(true)
+//		http.setRequestMethod(method)
+//		reqProperties.keySet().each { propertyKey ->
+//			http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
+//		}
+//		if(body != null) {
+//			http.outputStream.write(body.getBytes("UTF-8"))
+//		}
+//		http.connect()
 	}
 	
 	assert http.responseCode >= 200 && http.responseCode < 300 : "Error while calling http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath} . Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
