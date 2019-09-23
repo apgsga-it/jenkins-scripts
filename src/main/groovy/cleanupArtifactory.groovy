@@ -160,7 +160,8 @@ private def executeSystemCmd(def cmd, def waitTimeInMs) {
 }
 
 private artifactsToBeDeletedFor(def repo) {
-
+	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
+	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
 	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
 	return executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body)
 	/*
