@@ -273,7 +273,9 @@ private executeArtifactoryHttpRequest(def contextPath, def method, def Map reqPr
 		reqProperties.keySet().each { propertyKey ->
 			http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
 		}
-		http.outputStream.write(body.getBytes("UTF-8"))
+		if(body != null) {
+			http.outputStream.write(body.getBytes("UTF-8"))
+		}
 		http.connect()
 	}
 
