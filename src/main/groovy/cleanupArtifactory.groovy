@@ -11,9 +11,11 @@ def final repositoriesAsJson = new JsonSlurper().parseText(env["repoToBeCleanedU
 @Field releasesFormatedForAqlSearch
 @Field revNumberToCompleteRevision = [:]
 
+// TODO: Rename this method
+formatReleasesForAqlSearch()
 
-println releasesFormatedForAqlSearch
-println revNumberToCompleteRevision
+println "releasesFormatedForAqlSearch: " + releasesFormatedForAqlSearch
+println "revNumberToCompleteRevision: " + revNumberToCompleteRevision
 
 repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
