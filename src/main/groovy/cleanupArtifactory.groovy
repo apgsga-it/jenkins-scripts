@@ -272,6 +272,7 @@ private def executeArtifactoryHttpRequest(def contextPath, def method, def Map r
 		String basicAuth2 = "Basic " + new String(Base64.getEncoder().encode(userpass2.getBytes()));
 		http.setRequestProperty ("Authorization", basicAuth2);
 		http.setDoOutput(true)
+		http.setRequestMethod(method)
 		reqProperties.keySet().each { propertyKey ->
 			http.setRequestProperty(propertyKey, reqProperties.get(propertyKey))
 		}
