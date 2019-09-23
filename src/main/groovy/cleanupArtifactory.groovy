@@ -40,7 +40,6 @@ private def storeRevisionMappingForSearch(def release) {
 
 private def deleteArtifacts(def repo) {
 	def artifactsToBeDeleted = artifactsToBeDeletedFor(repo)
-	println "Following Artifact(s) will be deleted for repo ${repo.name}: ${artifactsToBeDeleted}" 
 	def resultPath
 	artifactsToBeDeleted.results.each { result ->
 		if (result.path.toString().equals(".")) {
