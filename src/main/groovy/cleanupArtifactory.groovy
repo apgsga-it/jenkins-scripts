@@ -8,6 +8,7 @@ def final repositoriesAsJson = new JsonSlurper().parseText(System.getenv()["repo
 @Field dryRun
 @Field releasesFormatedForAqlSearch
 @Field revNumberToCompleteRevision = [:]
+@Field Set revisionNumbersToBeRemoved = []
 
 printHeader()
 initGlobalVariable()
@@ -15,6 +16,19 @@ repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
 	deleteArtifacts(repo)
 	println "Repo ${repo.name} successfully cleaned"	
+}
+doDeleteRevisions()
+
+private def doDeleteRevisions() {
+	println "Calling apsrevcli to remove following revision numbers: ${revisionNumbersToBeRemoved}"
+	def revisionWithSemiColumn = revisionNumbersToBeRemoved.split(";")
+	def apsRevCliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr \"${revisionWithSemiColumn}\""
+	if(!dryRun) {
+		executeSystemCmd(apsRevCliCmd, 10000)
+	}
+	else {
+		println "Running dry, following would have been called: ${apsRevCliCmd}"
+	}
 }
 
 private def printHeader() {
@@ -64,24 +78,26 @@ private def deleteArtifacts(def repo) {
 			resultPath = result.repo + "/" + result.path + "/" + result.name
 		}
 		doDeleteArtifact(resultPath)
-		doDeleteRevision(resultPath)
+		storeRevisionToBeDeleted(resultPath)
 	}
 	println "Done deleting ${artifactsToBeDeleted.range.total} Artifacts and corresponding Revisions for repo ${repo.name} (dryRun was ${dryRun})"
 }
 
-private def doDeleteRevision(def artifactoryPath) {
-	revNumberToCompleteRevision.keySet().each { searchedRevision ->
-		if(artifactoryPath.contains(searchedRevision)) {
-			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
-			if(!dryRun) {
-				println "Following revision will be removed from Revisions.json: ${revNumberToCompleteRevision.get(searchedRevision)}"
-				executeSystemCmd(cmd, 10000)
-			}
-			else {
-				println "Running dry ... Following would otherwise have been called: ${cmd}"
-			}
-		}		
-	}
+private def storeRevisionToBeDeleted(def artifactoryPath) {
+	revisionNumbersToBeRemoved.add(revNumberToCompleteRevision.get(searchedRevision))
+}
+//	revNumberToCompleteRevision.keySet().each { searchedRevision ->
+//		if(artifactoryPath.contains(searchedRevision)) {
+//			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
+//			if(!dryRun) {
+//				println "Following revision will be removed from Revisions.json: ${revNumberToCompleteRevision.get(searchedRevision)}"
+//				executeSystemCmd(cmd, 10000)
+//			}
+//			else {
+//				println "Running dry ... Following would otherwise have been called: ${cmd}"
+//			}
+//		}		
+//	}
 }
 
 private def doDeleteArtifact(def artifactPath) {
