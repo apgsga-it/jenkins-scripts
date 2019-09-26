@@ -9,20 +9,27 @@ def final repositoriesAsJson = new JsonSlurper().parseText(System.getenv()["repo
 @Field releasesFormatedForAqlSearch
 @Field revNumberToCompleteRevision = [:]
 
-println "============================================="
-println "========== < P A R A M E T E R S > =========="
-println "============================================="
-println "dryRun: ${System.getenv()["dryRun"]}"
-println "Repository Configuration: ${System.getenv()["repoToBeCleanedUp"]}"
-println "=============================================="
-println "========== </ P A R A M E T E R S > =========="
-println "=============================================="
-
+printHeader()
 initGlobalVariable()
 repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
 	deleteArtifacts(repo)
 	println "Repo ${repo.name} successfully cleaned"	
+}
+
+private def printHeader() {
+	println ""
+	println ""
+	println "============================================="
+	println "========== < P A R A M E T E R S > =========="
+	println "============================================="
+	println "dryRun: ${System.getenv()["dryRun"]}"
+	println "Repository Configuration: ${System.getenv()["repoToBeCleanedUp"]}"
+	println "=============================================="
+	println "========== </ P A R A M E T E R S > =========="
+	println "=============================================="
+	println ""
+	println ""
 }
 
 private def initGlobalVariable() {
