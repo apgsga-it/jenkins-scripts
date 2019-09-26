@@ -9,10 +9,14 @@ def final repositoriesAsJson = new JsonSlurper().parseText(System.getenv()["repo
 @Field releasesFormatedForAqlSearch
 @Field revNumberToCompleteRevision = [:]
 
+println "============================================="
 println "========== < P A R A M E T E R S > =========="
+println "============================================="
 println "dryRun: ${System.getenv()["dryRun"]}"
 println "Repository Configuration: ${System.getenv()["repoToBeCleanedUp"]}"
+println "=============================================="
 println "========== </ P A R A M E T E R S > =========="
+println "=============================================="
 
 initGlobalVariable()
 repositoriesAsJson.repositories.each { repo ->
