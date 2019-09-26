@@ -85,7 +85,6 @@ private def deleteArtifacts(def repo) {
 
 private def storeRevisionToBeDeleted(def artifactoryPath) {
 	revisionNumbersToBeRemoved.add(revNumberToCompleteRevision.get(searchedRevision))
-}
 //	revNumberToCompleteRevision.keySet().each { searchedRevision ->
 //		if(artifactoryPath.contains(searchedRevision)) {
 //			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
