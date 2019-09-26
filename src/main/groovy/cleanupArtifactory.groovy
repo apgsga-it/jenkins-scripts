@@ -20,14 +20,19 @@ repositoriesAsJson.repositories.each { repo ->
 doDeleteRevisions()
 
 private def doDeleteRevisions() {
-	println "Calling apsrevcli to remove following revision numbers: ${revisionNumbersToBeRemoved}"
-	def revisionWithSemiColumn = revisionNumbersToBeRemoved.join(";")
-	def apsRevCliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr \"${revisionWithSemiColumn}\""
-	if(!dryRun) {
-		executeSystemCmd(apsRevCliCmd, 10000)
+	if(revisionNumbersToBeRemoved.size() > 0) {
+		println "Calling apsrevcli to remove following revision numbers: ${revisionNumbersToBeRemoved}"
+		def revisionWithSemiColumn = revisionNumbersToBeRemoved.join(";")
+		def apsRevCliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr \"${revisionWithSemiColumn}\""
+		if(!dryRun) {
+			executeSystemCmd(apsRevCliCmd, 10000)
+		}
+		else {
+			println "Running dry, following would have been called: ${apsRevCliCmd}"
+		}
 	}
 	else {
-		println "Running dry, following would have been called: ${apsRevCliCmd}"
+		println "No need to delete revision numbers!!"
 	}
 }
 
