@@ -9,8 +9,11 @@ def final repositoriesAsJson = new JsonSlurper().parseText(System.getenv()["repo
 @Field releasesFormatedForAqlSearch
 @Field revNumberToCompleteRevision = [:]
 
+println "Running with following parameter ..."
+println "dryRun: ${System.getenv()["dryRun"]}"
+println "Repository Configuration: ${System.getenv()["repoToBeCleanedUp"]}"
+
 initGlobalVariable()
-println "Running dry: ${dryRun}"
 repositoriesAsJson.repositories.each { repo ->
 	println "Cleaning repo ${repo.name} started..."
 	deleteArtifacts(repo)
