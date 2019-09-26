@@ -21,7 +21,7 @@ doDeleteRevisions()
 
 private def doDeleteRevisions() {
 	println "Calling apsrevcli to remove following revision numbers: ${revisionNumbersToBeRemoved}"
-	def revisionWithSemiColumn = revisionNumbersToBeRemoved.split(";")
+	def revisionWithSemiColumn = revisionNumbersToBeRemoved.join(";")
 	def apsRevCliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr \"${revisionWithSemiColumn}\""
 	if(!dryRun) {
 		executeSystemCmd(apsRevCliCmd, 10000)
