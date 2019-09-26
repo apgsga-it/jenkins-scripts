@@ -25,6 +25,7 @@ private def doDeleteRevisions() {
 		def revisionWithSemiColumn = revisionNumbersToBeRemoved.join(";")
 		def apsRevCliCmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr \"${revisionWithSemiColumn}\""
 		if(!dryRun) {
+			println "Executing: ${apsRevCliCmd}"
 			executeSystemCmd(apsRevCliCmd, 10000)
 		}
 		else {
@@ -89,20 +90,9 @@ private def deleteArtifacts(def repo) {
 }
 
 private def storeRevisionToBeDeleted(def artifactoryPath) {
-	
-	
-	
 	revNumberToCompleteRevision.keySet().each { searchedRevision ->
 		if(artifactoryPath.contains(searchedRevision)) {
 			revisionNumbersToBeRemoved.add(revNumberToCompleteRevision.get(searchedRevision))
-//			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
-//			if(!dryRun) {
-//				println "Following revision will be removed from Revisions.json: ${revNumberToCompleteRevision.get(searchedRevision)}"
-//				executeSystemCmd(cmd, 10000)
-//			}
-//			else {
-//				println "Running dry ... Following would otherwise have been called: ${cmd}"
-//			}
 		}		
 	}
 }
