@@ -89,9 +89,12 @@ private def deleteArtifacts(def repo) {
 }
 
 private def storeRevisionToBeDeleted(def artifactoryPath) {
-	revisionNumbersToBeRemoved.add(revNumberToCompleteRevision.get(searchedRevision))
-//	revNumberToCompleteRevision.keySet().each { searchedRevision ->
-//		if(artifactoryPath.contains(searchedRevision)) {
+	
+	
+	
+	revNumberToCompleteRevision.keySet().each { searchedRevision ->
+		if(artifactoryPath.contains(searchedRevision)) {
+			revisionNumbersToBeRemoved.add(revNumberToCompleteRevision.get(searchedRevision))
 //			def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -dr ${revNumberToCompleteRevision.get(searchedRevision)}"
 //			if(!dryRun) {
 //				println "Following revision will be removed from Revisions.json: ${revNumberToCompleteRevision.get(searchedRevision)}"
@@ -100,8 +103,8 @@ private def storeRevisionToBeDeleted(def artifactoryPath) {
 //			else {
 //				println "Running dry ... Following would otherwise have been called: ${cmd}"
 //			}
-//		}		
-//	}
+		}		
+	}
 }
 
 private def doDeleteArtifact(def artifactPath) {
