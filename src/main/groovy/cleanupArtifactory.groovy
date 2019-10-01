@@ -195,7 +195,7 @@ private def executeArtifactoryHttpRequest(def contextPath, def method, def Map r
 		String newUrl = http.getHeaderField("Location");
 		http = doExecuteHttpAndReturn(newUrl, method, reqProperties, body)
 	}
-	assert http.responseCode >= 200 && http.responseCode < 300 : "Error while calling http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath} . Code: ${http.responseCode} , Message: ${http.getResponseMessage()}"
+	assert http.responseCode >= 200 && http.responseCode < 300 : "Error while calling http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath} . Code: ${http.responseCode} , Message: ${http.getResponseMessage()}, Body: ${body}"
 	// HTTP 204 -> No Content
 	def output = http.responseCode != 204 ? new JsonSlurper().parse(http.inputStream) : ""
 	return output
