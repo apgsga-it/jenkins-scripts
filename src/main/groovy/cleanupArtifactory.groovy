@@ -186,7 +186,7 @@ private def doExecuteHttpAndReturn(def url, def method, def reqProperties, def b
 	http.connect()
 	return http
 }
-
+ 
 private def executeArtifactoryHttpRequest(def contextPath, def method, def Map reqProperties, def body) {
 	def completeUrl = "http://artifactory4t4apgsga.jfrog.io/artifactory4t4apgsga/${contextPath}"
 	def http = doExecuteHttpAndReturn(completeUrl, method, reqProperties, body)
