@@ -80,7 +80,10 @@ private def deleteArtifacts(def repo) {
 	def resultPath
 	def totalArtifactDeleted = 0
 	
+	println "(DEBUG TO BE REMOVED) artifactsToBeDeletedList: ${artifactsToBeDeletedList}"
+	
 	artifactsToBeDeletedList.each {artifactsToBeDeleted ->
+		println "(DEBUG TO BE REMOVED) artifactsToBeDeleted: ${artifactsToBeDeleted}"
 		artifactsToBeDeleted.results.each { result ->
 			if (result.path.toString().equals(".")) {
 				resultPath = result.repo + "/" + result.name
@@ -166,6 +169,7 @@ private artifactsToBeDeletedFor(def repo) {
 		println "(DEBUG TO BE REMOVED) resultOfAllRequest: ${resultOfAllRequest}"
 	}
 	
+	println "(DEBUG TO BE REMOVED) resultOfAllRequest which will be returned: ${resultOfAllRequest}"
 	return resultOfAllRequest
 }
 
