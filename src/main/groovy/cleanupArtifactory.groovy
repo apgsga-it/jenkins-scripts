@@ -6,7 +6,7 @@ import groovy.transform.Field
 
 def final repositoriesAsJson = new JsonSlurper().parseText(System.getenv()["repoToBeCleanedUp"])
 @Field dryRun
-@Field releasesFormatedForAqlSearch
+@Field releasesFormatedForAqlSearch = []
 @Field revNumberToCompleteRevision = [:]
 @Field Set revisionNumbersToBeRemoved = []
 
@@ -53,18 +53,19 @@ private def printHeader() {
 }
 
 private def initGlobalVariable() {
+	initReleasesFormatedForAqlSearch()
+	dryRun = System.getenv()["dryRun"].equals("true") ? true : false
+}
+
+private def initReleasesFormatedForAqlSearch() {
 	def nonProdReleases = targetInstancesReleases()
-	def aql = ""
 	nonProdReleases.each { release ->
 		def firstPart = '{"name":{"$match":"*'
 		def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
-		def lastPart = '*"}},'
-		aql += "${firstPart}${extractedRelease}${lastPart}"
+		def lastPart = '*"}}'
+		releasesFormatedForAqlSearch.add("${firstPart}${extractedRelease}${lastPart}")
 		storeRevisionMappingForSearch(release)
 	}
-	
-	releasesFormatedForAqlSearch = aql.substring(0, aql.lastIndexOf(","))
-	dryRun = System.getenv()["dryRun"].equals("true") ? true : false
 }
 
 private def storeRevisionMappingForSearch(def release) {
@@ -74,19 +75,25 @@ private def storeRevisionMappingForSearch(def release) {
 }
 
 private def deleteArtifacts(def repo) {
-	def artifactsToBeDeleted = artifactsToBeDeletedFor(repo)
+	
+	def artifactsToBeDeletedList = artifactsToBeDeletedFor(repo)
 	def resultPath
-	artifactsToBeDeleted.results.each { result ->
-		if (result.path.toString().equals(".")) {
-			resultPath = result.repo + "/" + result.name
+	def totalArtifactDeleted = 0
+	
+	artifactsToBeDeletedList.each {artifactsToBeDeleted ->
+		artifactsToBeDeleted.results.each { result ->
+			if (result.path.toString().equals(".")) {
+				resultPath = result.repo + "/" + result.name
+			}
+			else {
+				resultPath = result.repo + "/" + result.path + "/" + result.name
+			}
+			doDeleteArtifact(resultPath)
+			storeRevisionToBeDeleted(resultPath)
+			totalArtifactDeleted += artifactsToBeDeleted.range.total
 		}
-		else {
-			resultPath = result.repo + "/" + result.path + "/" + result.name
-		}
-		doDeleteArtifact(resultPath)
-		storeRevisionToBeDeleted(resultPath)
 	}
-	println "Done deleting ${artifactsToBeDeleted.range.total} Artifacts and corresponding Revisions for repo ${repo.name} (dryRun was ${dryRun})"
+	println "Done deleting ${totalArtifactDeleted} Artifacts and corresponding Revisions for repo ${repo.name} (dryRun was ${dryRun})"
 }
 
 private def storeRevisionToBeDeleted(def artifactoryPath) {
@@ -145,8 +152,21 @@ private def executeSystemCmd(def cmd, def waitTimeInMs) {
 private artifactsToBeDeletedFor(def repo) {
 	def keepMinDate = new Date().minus(Integer.valueOf(repo.keepMaxDays))
 	def keepMinDateFormatted = keepMinDate.format("yyyy-MM-dd")
-	def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${releasesFormatedForAqlSearch}" + ']})'
-	return executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body)
+	def resultOfAllRequest = []
+	def maxSearchSizePerRequest = 20
+	
+	// In order not to exceed the body length for HTTP Request, we split the request with maximum "maxSearchSizePerRequest" search Artifacts
+	println "(DEBUG TO BE REMOVED) releasesFormatedForAqlSearch: ${releasesFormatedForAqlSearch}"
+	releasesFormatedForAqlSearch.collate(maxSearchSizePerRequest).each { setOfSql ->
+		println "(DEBUG TO BE REMOVED) setOfSql.size(): ${setOfSql.size()}"
+		println "(DEBUG TO BE REMOVED) setOfSql: ${setOfSql}"
+		def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${setOfSql.split(',')}" + ']})'
+		println "(DEBUG TO BE REMOVED) body: ${body}"
+		resultOfAllRequest.add(executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body))
+		println "(DEBUG TO BE REMOVED) resultOfAllRequest: ${resultOfAllRequest}"
+	}
+	
+	return resultOfAllRequest
 }
 
 private def executeArtifactoryHttpRequest(def contextPath, def method, def reqProperties) {
