@@ -93,7 +93,10 @@ private def deleteArtifacts(def repo) {
 			}
 			doDeleteArtifact(resultPath)
 			storeRevisionToBeDeleted(resultPath)
+			println "(DEBUG TO BE REMOVED) totalArtifactDeleted: ${totalArtifactDeleted}"
+			println "(DEBUG TO BE REMOVED) artifactsToBeDeleted.range.total: ${artifactsToBeDeleted.range.total}"
 			totalArtifactDeleted += artifactsToBeDeleted.range.total
+			println "(DEBUG TO BE REMOVED) totalArtifactDeleted: ${totalArtifactDeleted}"
 		}
 	}
 	println "Done deleting ${totalArtifactDeleted} Artifacts and corresponding Revisions for repo ${repo.name} (dryRun was ${dryRun})"
