@@ -80,10 +80,7 @@ private def deleteArtifacts(def repo) {
 	def resultPath
 	def totalArtifactDeleted = 0
 	
-	println "(DEBUG TO BE REMOVED) artifactsToBeDeletedList: ${artifactsToBeDeletedList}"
-	
 	artifactsToBeDeletedList.each {artifactsToBeDeleted ->
-		println "(DEBUG TO BE REMOVED) artifactsToBeDeleted: ${artifactsToBeDeleted}"
 		artifactsToBeDeleted.results.each { result ->
 			if (result.path.toString().equals(".")) {
 				resultPath = result.repo + "/" + result.name
@@ -94,10 +91,7 @@ private def deleteArtifacts(def repo) {
 			doDeleteArtifact(resultPath)
 			storeRevisionToBeDeleted(resultPath)
 		}
-		println "(DEBUG TO BE REMOVED) totalArtifactDeleted: ${totalArtifactDeleted}"
-		println "(DEBUG TO BE REMOVED) artifactsToBeDeleted.range.total: ${artifactsToBeDeleted.range.total}"
 		totalArtifactDeleted += artifactsToBeDeleted.range.total
-		println "(DEBUG TO BE REMOVED) totalArtifactDeleted: ${totalArtifactDeleted}"
 	}
 	println "Done deleting ${totalArtifactDeleted} Artifacts and corresponding Revisions for repo ${repo.name} (dryRun was ${dryRun})"
 }
@@ -162,17 +156,10 @@ private artifactsToBeDeletedFor(def repo) {
 	def maxSearchSizePerRequest = 20
 	
 	// In order not to exceed the body length for HTTP Request, we split the request with maximum "maxSearchSizePerRequest" search Artifacts
-	println "(DEBUG TO BE REMOVED) releasesFormatedForAqlSearch: ${releasesFormatedForAqlSearch}"
 	releasesFormatedForAqlSearch.collate(maxSearchSizePerRequest).each { setOfSql ->
-		println "(DEBUG TO BE REMOVED) setOfSql.size(): ${setOfSql.size()}"
-		println "(DEBUG TO BE REMOVED) setOfSql: ${setOfSql}"
 		def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${setOfSql.join(',')}" + ']})'
-		println "(DEBUG TO BE REMOVED) body: ${body}"
 		resultOfAllRequest.add(executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body))
-		println "(DEBUG TO BE REMOVED) resultOfAllRequest: ${resultOfAllRequest}"
 	}
-	
-	println "(DEBUG TO BE REMOVED) resultOfAllRequest which will be returned: ${resultOfAllRequest}"
 	return resultOfAllRequest
 }
 
