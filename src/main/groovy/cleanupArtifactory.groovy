@@ -160,7 +160,7 @@ private artifactsToBeDeletedFor(def repo) {
 	releasesFormatedForAqlSearch.collate(maxSearchSizePerRequest).each { setOfSql ->
 		println "(DEBUG TO BE REMOVED) setOfSql.size(): ${setOfSql.size()}"
 		println "(DEBUG TO BE REMOVED) setOfSql: ${setOfSql}"
-		def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${setOfSql.split(',')}" + ']})'
+		def body = 'items.find({"repo":"' + "${repo.name}" + '", "created":{"$lt":"' + "${keepMinDateFormatted}" + '"}, "type":"file", "$or":[' + "${setOfSql.join(',')}" + ']})'
 		println "(DEBUG TO BE REMOVED) body: ${body}"
 		resultOfAllRequest.add(executeArtifactoryHttpRequest("api/search/aql", "POST", ["Content-Type":"text/plain"], body))
 		println "(DEBUG TO BE REMOVED) resultOfAllRequest: ${resultOfAllRequest}"
