@@ -60,12 +60,24 @@ private def initGlobalVariable() {
 private def initReleasesFormatedForAqlSearch() {
 	def nonProdReleases = targetInstancesReleases()
 	nonProdReleases.each { release ->
-		def firstPart = '{"name":{"$match":"*'
-		def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
-		def lastPart = '*"}}'
-		releasesFormatedForAqlSearch.add("${firstPart}${extractedRelease}${lastPart}")
+		releasesFormatedForAqlSearch.add(aqlForNonSourceSearch(release))
+		releasesFormatedForAqlSearch.add(aqlForSourceSearch(release))
 		storeRevisionMappingForSearch(release)
 	}
+}
+
+private def aqlForNonSourceSearch(release) {
+	def firstPart = '{"name":{"$match":"*'
+	def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "."
+	def lastPart = '*"}}'
+	return "${firstPart}${extractedRelease}${lastPart}"
+}
+
+private def aqlForSourceSearch(release) {
+	def firstPart = '{"name":{"$match":"*'
+	def extractedRelease = release.substring(release.lastIndexOf("-"),release.length()) + "-sources."
+	def lastPart = '*"}}'
+	return "${firstPart}${extractedRelease}${lastPart}"
 }
 
 private def storeRevisionMappingForSearch(def release) {
