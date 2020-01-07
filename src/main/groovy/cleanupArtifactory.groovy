@@ -58,7 +58,7 @@ private def initGlobalVariable() {
 }
 
 private def initReleasesFormatedForAqlSearch() {
-	def nonProdReleases = targetInstancesReleases()
+	def nonProdReleases = nonProdTargetInstancesReleases()
 	nonProdReleases.each { release ->
 		releasesFormatedForAqlSearch.add(aqlForNonSourceSearch(release))
 		releasesFormatedForAqlSearch.add(aqlForSourceSearch(release))
@@ -126,11 +126,10 @@ private def doDeleteArtifact(def artifactPath) {
 	}
 }
 
-private def targetInstancesReleases() {
+private def nonProdTargetInstancesReleases() {
 	def releases = []
 	def targets = loadTargetInstances()
-	
-	targets.each { t -> 
+	targets.stream().filter{ f -> !f.name.equalsIgnoreCase("chpi211")}.each { t ->
 		def cmd = "/opt/apg-patch-cli/bin/apsrevcli.sh -gr ${t.name}"
 		def targetReleases = executeSystemCmd(cmd,10000)
 		println "Following releases found for target ${t.name}: ${targetReleases}"
